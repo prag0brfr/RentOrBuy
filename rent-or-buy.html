@@ -1,0 +1,1122 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Louer ou Acheter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --surface-2:#e9edf1; --ink:#12161d; --ink-2:#465061; --ink-3:#6c7584; --line:#d9dfe6;
+  --buy:#2a78d6; --rent:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s7:#4a3aa7;
+  --good:#17804a; --good-bg:#e3f4ea; --warn:#9a5b00; --warn-bg:#fdf0d8; --bad:#b83232; --bad-bg:#fbe5e4;
+  --div-neg:#e34948; --div-pos:#2a78d6; --div-mid:#f0efec;
+  --focus:#2a78d6; --shadow:0 1px 2px rgba(18,22,29,.06),0 4px 16px rgba(18,22,29,.05);
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1115; --surface:#171b21; --surface-2:#20262e; --ink:#eef1f5; --ink-2:#b9c0cc; --ink-3:#8c95a3; --line:#2c333d;
+    --buy:#3987e5; --rent:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s7:#9085e9;
+    --good:#4cc98a; --good-bg:#15301f; --warn:#e8b04a; --warn-bg:#35270e; --bad:#ef7b7b; --bad-bg:#3a1a1a;
+    --div-neg:#e66767; --div-pos:#3987e5; --div-mid:#383835; --focus:#6da7ec; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1115; --surface:#171b21; --surface-2:#20262e; --ink:#eef1f5; --ink-2:#b9c0cc; --ink-3:#8c95a3; --line:#2c333d;
+  --buy:#3987e5; --rent:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s7:#9085e9;
+  --good:#4cc98a; --good-bg:#15301f; --warn:#e8b04a; --warn-bg:#35270e; --bad:#ef7b7b; --bad-bg:#3a1a1a;
+  --div-neg:#e66767; --div-pos:#3987e5; --div-mid:#383835; --focus:#6da7ec; --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);margin:0;padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:1360px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:28px 18px;border-bottom:1px solid var(--line)}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.05;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.brand h1 .or{color:var(--ink-3);font-weight:500}
+.brand h1 .b{color:var(--buy)} .brand h1 .r{color:var(--rent)}
+.brand p{margin:6px 0 0;color:var(--ink-2);max-width:62ch}
+.controls-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:500 13px/1 var(--f-body);padding:8px 13px;border-radius:999px;cursor:pointer;letter-spacing:.02em}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.seg button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+nav.tabs{display:flex;gap:4px;margin-block:18px 20px;border-bottom:1px solid var(--line)}
+nav.tabs button{border:0;background:none;color:var(--ink-3);font:600 14px/1 var(--f-body);padding:10px 14px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.app{display:grid;grid-template-columns:minmax(290px,370px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:980px){.app{grid-template-columns:minmax(0,1fr)}}
+aside.inputs{background:var(--surface);border:1px solid var(--line);border-radius:12px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:980px){aside.inputs{position:static;max-height:none}}
+details.grp{border-bottom:1px solid var(--line)}
+details.grp:last-child{border-bottom:0}
+details.grp>summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font:600 13px/1.2 var(--f-body);text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2)}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary::after{content:"+";font:400 18px/1 var(--f-mono);color:var(--ink-3)}
+details.grp[open]>summary::after{content:"–"}
+.fields{display:grid;gap:12px;padding:0 18px 18px}
+.f{display:grid;gap:5px}
+.f label{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.f label .hint{color:var(--ink-3);font-size:12px;text-align:right;margin-left:auto}
+.qh{flex:none;display:inline-grid;place-items:center;width:17px;height:17px;padding:0;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);font:600 11px/1 var(--f-body);cursor:help;transition:background .12s,color .12s,border-color .12s}
+.qh:hover,.qh[aria-expanded="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chk .qh{margin-top:1px}
+#tip{position:fixed;z-index:50;max-width:300px;background:var(--ink);color:var(--surface);font:13px/1.45 var(--f-body);padding:10px 12px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;opacity:0;transform:translateY(2px);transition:opacity .12s,transform .12s}
+#tip.on{opacity:1;transform:none}
+#tip::after{content:"";position:absolute;left:var(--ax,20px);width:10px;height:10px;background:inherit;transform:rotate(45deg)}
+#tip.below::after{top:-5px} #tip.above::after{bottom:-5px}
+.in{display:flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.in:focus-within{border-color:var(--focus)}
+.in input,.in select{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 14px/1 var(--f-mono);padding:9px 10px;font-variant-numeric:tabular-nums}
+.in select{font-family:var(--f-body);font-weight:500;font-size:13.5px;cursor:pointer}
+.in select option{background:var(--surface);color:var(--ink)}
+.in .u{padding:0 10px;color:var(--ink-3);font:500 12px/1 var(--f-mono)}
+.in input:focus,.in select:focus{outline:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.blocks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.blocks .in input{padding:8px 6px;font-size:13px;text-align:right}
+.blocks .lbl{font:500 11px/1 var(--f-mono);color:var(--ink-3);margin-bottom:3px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink-2)}
+.chk input{margin-top:3px;accent-color:var(--buy)}
+.note{font-size:12px;color:var(--ink-3);line-height:1.45}
+main.results{display:grid;gap:20px;min-width:0}
+.verdict{border-radius:12px;padding:20px 22px;background:var(--surface);border:1px solid var(--line);display:grid;gap:6px}
+.verdict .eyebrow{font:600 12px/1 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.verdict h2{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,2.6vw,30px);line-height:1.15;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.verdict h2 .buy{color:var(--buy)} .verdict h2 .rent{color:var(--rent)}
+.verdict p{margin:0;color:var(--ink-2);max-width:80ch}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.kpi .k{font-size:12.5px;color:var(--ink-3)}
+.kpi .v{font:500 22px/1.15 var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.kpi .s{font-size:12.5px;color:var(--ink-2)}
+.pill{display:inline-flex;align-items:center;gap:5px;font:600 11.5px/1 var(--f-body);padding:4px 8px;border-radius:999px;width:max-content}
+.pill.good{color:var(--good);background:var(--good-bg)} .pill.warn{color:var(--warn);background:var(--warn-bg)} .pill.bad{color:var(--bad);background:var(--bad-bg)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.card h3{font-family:var(--f-display);font-weight:700;font-size:18px;margin:0 0 2px;letter-spacing:-.005em}
+.card .sub{color:var(--ink-3);font-size:13px;margin:0 0 14px;max-width:80ch}
+.chartbox{position:relative;height:320px}
+@media (max-width:600px){.chartbox{height:260px}}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:1180px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:10px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend i.line{height:3px;border-radius:2px;width:16px}
+.costlist{display:grid;gap:9px}
+.costrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px}
+.costrow .bar{height:10px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.costrow .bar b{display:block;height:100%;background:var(--buy);border-radius:0 4px 4px 0}
+.costrow .amt{font:500 13px/1 var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;min-width:88px}
+.costrow.total{border-top:1px solid var(--line);padding-top:10px;font-weight:600}
+.heat-wrap{overflow-x:auto}
+table.heat{border-collapse:separate;border-spacing:2px;font:500 12px/1 var(--f-mono);font-variant-numeric:tabular-nums;margin:0 auto}
+table.heat th{color:var(--ink-3);font-weight:500;padding:6px 8px;white-space:nowrap}
+table.heat td{padding:10px 6px;text-align:center;border-radius:4px;min-width:62px;white-space:nowrap;cursor:default}
+table.heat td.cur{outline:2px solid var(--ink);outline-offset:-2px}
+.axis-cap{font-size:12px;color:var(--ink-3);text-align:center;margin-top:8px}
+details.tbl summary{cursor:pointer;color:var(--ink-2);font-size:13px;font-weight:600}
+.tbl-wrap{overflow-x:auto;margin-top:10px}
+table.data{border-collapse:collapse;width:100%;font:13px/1.3 var(--f-mono);font-variant-numeric:tabular-nums}
+table.data th,table.data td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+table.data th{font-family:var(--f-body);font-weight:600;color:var(--ink-2);font-size:12px}
+table.data td.pos{color:var(--good)} table.data td.neg{color:var(--bad)}
+/* guide */
+.guide{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;align-items:start}
+@media (max-width:860px){.guide{grid-template-columns:minmax(0,1fr)}.guide nav{display:none}}
+.guide nav{position:sticky;top:12px;display:grid;gap:2px;font-size:13.5px}
+.guide nav a{color:var(--ink-2);text-decoration:none;padding:6px 10px;border-radius:6px}
+.guide nav a:hover{background:var(--surface-2);color:var(--ink)}
+.guide article{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 28px 28px;min-width:0}
+.guide section{padding-top:20px}
+.guide h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0 0 8px;letter-spacing:-.01em}
+.guide h4{margin:14px 0 4px;font-size:14.5px}
+.guide p,.guide li{max-width:74ch;color:var(--ink-2)}
+.guide strong{color:var(--ink)}
+.guide ol,.guide ul{padding-left:20px}
+.guide li{margin-block:4px}
+.guide .tw{overflow-x:auto}
+.guide table{border-collapse:collapse;font-size:13.5px;margin-block:10px;min-width:480px}
+.guide table th,.guide table td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+.guide table th{color:var(--ink);font-weight:600}
+.guide table td.n{font-family:var(--f-mono);white-space:nowrap}
+.guide a{color:var(--buy)}
+.callout{background:var(--surface-2);border-radius:8px;padding:12px 14px;font-size:13.5px;color:var(--ink-2);margin-block:12px}
+footer.foot{margin-top:28px;color:var(--ink-3);font-size:12.5px;max-width:100ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <h1><span class="r" data-i18n="h_rent">Louer</span> <span class="or" data-i18n="h_or">ou</span> <span class="b" data-i18n="h_buy">acheter</span> ?</h1>
+    <p data-i18n="tagline">Simulateur patrimonial pour la résidence principale en France.</p>
+  </div>
+  <div class="controls-top">
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" data-lang="pt" aria-pressed="false">PT</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+    </div>
+  </div>
+</header>
+<nav class="tabs" role="tablist">
+  <button type="button" role="tab" id="tab-sim" aria-selected="true" data-i18n="tab_sim">Simulateur</button>
+  <button type="button" role="tab" id="tab-guide" aria-selected="false" data-i18n="tab_guide">Guide de l'achat en France</button>
+</nav>
+
+<div id="view-sim">
+<div class="app">
+<aside class="inputs" aria-label="Inputs">
+  <details class="grp" open>
+    <summary data-i18n="g_rent">Location actuelle</summary>
+    <div class="fields">
+      <div class="f"><label for="rent"><span data-i18n="l_rent">Loyer + charges</span><span class="hint" data-i18n="u_month">/ mois</span></label><div class="in"><input id="rent" type="number" step="10" min="0" value="1400"><span class="u">€</span></div></div>
+      <div class="row2">
+        <div class="f"><label for="rentG"><span data-i18n="l_rentG">Hausse loyer / an</span></label><div class="in"><input id="rentG" type="number" step="0.1" value="2"><span class="u">%</span></div></div>
+        <div class="f"><label for="renterIns"><span data-i18n="l_renterIns">Assur. locataire / an</span></label><div class="in"><input id="renterIns" type="number" step="10" min="0" value="150"><span class="u">€</span></div></div>
+      </div>
+      <p class="note" data-i18n="n_rent">IRL T2 2026 : +1,15 % sur un an (INSEE).</p>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary data-i18n="g_prop">Le bien</summary>
+    <div class="fields">
+      <div class="f"><label for="price"><span data-i18n="l_price">Prix net vendeur</span></label><div class="in"><input id="price" type="number" step="1000" min="0" value="300000"><span class="u">€</span></div></div>
+      <div class="row2">
+        <div class="f"><label for="ptype"><span data-i18n="l_ptype">Type</span></label><div class="in"><select id="ptype"><option value="ancien" data-i18n="o_ancien">Ancien</option><option value="neuf" data-i18n="o_neuf">Neuf (VEFA)</option></select></div></div>
+        <div class="f"><label for="agencyPct"><span data-i18n="l_agency">Honoraires agence</span></label><div class="in"><input id="agencyPct" type="number" step="0.1" min="0" value="4"><span class="u">%</span></div></div>
+      </div>
+      <div class="f"><label for="dmto"><span data-i18n="l_dmto">Droits de mutation (DMTO)</span></label><div class="in"><select id="dmto">
+        <option value="6.32" data-i18n="o_dmto632">6,32 % — taux majoré (89 dép.)</option>
+        <option value="5.81" data-i18n="o_dmto581">5,81 % — primo-accédant / dép. non majoré</option>
+        <option value="5.09" data-i18n="o_dmto509">5,09 % — Indre</option>
+      </select></div></div>
+      <div class="row2">
+        <div class="f"><label for="notaryMode"><span data-i18n="l_notaryMode">Frais de notaire</span></label><div class="in"><select id="notaryMode"><option value="auto" data-i18n="o_auto">Calcul auto</option><option value="manual" data-i18n="o_manual">Manuel (%)</option></select></div></div>
+        <div class="f"><label for="notaryPct"><span data-i18n="l_notaryPct">% du prix</span></label><div class="in"><input id="notaryPct" type="number" step="0.1" min="0" value="7.9"><span class="u">%</span></div></div>
+      </div>
+      <p class="note" data-i18n="n_prop">Si l'annonce est « FAI » (frais d'agence inclus), saisissez le prix net vendeur et les honoraires séparément : les frais de notaire se calculent hors honoraires.</p>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary data-i18n="g_loan">Financement</summary>
+    <div class="fields">
+      <div class="row2">
+        <div class="f"><label for="apport"><span data-i18n="l_apport">Apport</span></label><div class="in"><input id="apport" type="number" step="1000" min="0" value="50000"><span class="u">€</span></div></div>
+        <div class="f"><label for="income"><span data-i18n="l_income">Revenus nets / mois</span></label><div class="in"><input id="income" type="number" step="100" min="0" value="5500"><span class="u">€</span></div></div>
+      </div>
+      <div class="row2">
+        <div class="f"><label for="rate"><span data-i18n="l_rate">Taux nominal</span></label><div class="in"><input id="rate" type="number" step="0.05" min="0" value="3.54"><span class="u">%</span></div></div>
+        <div class="f"><label for="years"><span data-i18n="l_years">Durée</span></label><div class="in"><input id="years" type="number" step="1" min="1" max="30" value="20"><span class="u" data-i18n="u_years">ans</span></div></div>
+      </div>
+      <div class="row2">
+        <div class="f"><label for="insRate"><span data-i18n="l_ins">Assurance emprunteur</span></label><div class="in"><input id="insRate" type="number" step="0.01" min="0" value="0.25"><span class="u">%</span></div></div>
+        <div class="f"><label for="guarPct"><span data-i18n="l_guar">Garantie (caution)</span></label><div class="in"><input id="guarPct" type="number" step="0.1" min="0" value="1.2"><span class="u">%</span></div></div>
+      </div>
+      <div class="row2">
+        <div class="f"><label for="dossier"><span data-i18n="l_dossier">Frais de dossier</span></label><div class="in"><input id="dossier" type="number" step="100" min="0" value="1000"><span class="u">€</span></div></div>
+        <div class="f"><label for="broker"><span data-i18n="l_broker">Courtier</span></label><div class="in"><input id="broker" type="number" step="100" min="0" value="0"><span class="u">€</span></div></div>
+      </div>
+      <p class="note" data-i18n="n_loan">Taux moyens sept. 2026 (Pretto) : 3,43 % sur 15 ans, 3,54 % sur 20 ans, 3,61 % sur 25 ans. Assurance : % annuel du capital initial.</p>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary data-i18n="g_own">Coûts de propriétaire</summary>
+    <div class="fields">
+      <div class="row2">
+        <div class="f"><label for="tf"><span data-i18n="l_tf">Taxe foncière / an</span></label><div class="in"><input id="tf" type="number" step="50" min="0" value="1300"><span class="u">€</span></div></div>
+        <div class="f"><label for="tfG"><span data-i18n="l_tfG">Hausse TF / an</span></label><div class="in"><input id="tfG" type="number" step="0.1" value="2"><span class="u">%</span></div></div>
+      </div>
+      <div class="row2">
+        <div class="f"><label for="copro"><span data-i18n="l_copro">Charges copro / mois</span></label><div class="in"><input id="copro" type="number" step="10" min="0" value="120"><span class="u">€</span></div></div>
+        <div class="f"><label for="maint"><span data-i18n="l_maint">Entretien / an</span></label><div class="in"><input id="maint" type="number" step="0.1" min="0" value="0.8"><span class="u" data-i18n="u_ofvalue">% val.</span></div></div>
+      </div>
+      <div class="f"><label for="ownerIns"><span data-i18n="l_ownerIns">Assurance habitation propriétaire / an</span></label><div class="in"><input id="ownerIns" type="number" step="10" min="0" value="250"><span class="u">€</span></div></div>
+      <p class="note" data-i18n="n_own">Charges copro : la part non récupérable que vous payez en plus en devenant propriétaire (ravalement, travaux votés, syndic…).</p>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary data-i18n="g_app">Valorisation & revente</summary>
+    <div class="fields">
+      <div class="f"><label for="appMode"><span data-i18n="l_appMode">Mode</span></label><div class="in"><select id="appMode"><option value="const" data-i18n="o_const">Taux annuel constant</option><option value="blocks" data-i18n="o_blocks">Par périodes de 5 ans</option></select></div></div>
+      <div class="f" id="appConstBox"><label for="app"><span data-i18n="l_app">Valorisation / an</span></label><div class="in"><input id="app" type="number" step="0.1" value="1"><span class="u">%</span></div></div>
+      <div class="f" id="appBlocksBox" hidden><label><span data-i18n="l_blocks">Valorisation / an, par période</span></label>
+        <div class="blocks" id="blocks"></div>
+      </div>
+      <div class="row2">
+        <div class="f"><label for="sellPct"><span data-i18n="l_sell">Frais de revente</span></label><div class="in"><input id="sellPct" type="number" step="0.5" min="0" value="5"><span class="u">%</span></div></div>
+        <div class="f"><label for="horizon"><span data-i18n="l_horizon">Horizon</span></label><div class="in"><input id="horizon" type="number" step="1" min="1" max="40" value="20"><span class="u" data-i18n="u_years">ans</span></div></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="ira" checked><span data-i18n="l_ira">Inclure les pénalités de remboursement anticipé (IRA) en cas de revente avant la fin du prêt</span></label>
+      <p class="note" data-i18n="n_app">INSEE T2 2026 : prix de l'ancien −0,8 % sur un an (maisons −1,3 %). La plus-value sur la résidence principale est exonérée d'impôt.</p>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary data-i18n="g_inv">Placement sans risque</summary>
+    <div class="fields">
+      <div class="f"><label for="preset"><span data-i18n="l_preset">Support</span></label><div class="in"><select id="preset">
+        <option value="2.15" data-i18n="o_fe">Fonds euros assurance-vie — 2,15 % net</option>
+        <option value="1.7" data-i18n="o_la">Livret A / LDDS — 1,7 % net</option>
+        <option value="2.5" data-i18n="o_lep">LEP (sous conditions) — 2,5 % net</option>
+        <option value="1.9" data-i18n="o_mix">Mix livrets + fonds euros — 1,9 % net</option>
+        <option value="custom" data-i18n="o_custom">Personnalisé</option>
+      </select></div></div>
+      <div class="row2">
+        <div class="f"><label for="inv"><span data-i18n="l_inv">Rendement net / an</span></label><div class="in"><input id="inv" type="number" step="0.05" value="2.15"><span class="u">%</span></div></div>
+        <div class="f"><label for="infl"><span data-i18n="l_infl">Inflation / an</span></label><div class="in"><input id="infl" type="number" step="0.1" value="2"><span class="u">%</span></div></div>
+      </div>
+      <p class="note" id="realRates"></p>
+      <label class="chk"><input type="checkbox" id="real"><span data-i18n="l_real">Afficher en euros constants (corrigés de l'inflation)</span></label>
+      <p class="note" data-i18n="n_inv">Rendement net d'impôts et de prélèvements sociaux. Fonds euros : 2,6 % en moyenne en 2025 (France Assureurs), moins 17,2 % de prélèvements sociaux ≈ 2,15 %.</p>
+    </div>
+  </details>
+</aside>
+
+<main class="results">
+  <section class="verdict" id="verdict" aria-live="polite"></section>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="card">
+    <h3 data-i18n="c1_t">Patrimoine net : acheter vs louer et placer</h3>
+    <p class="sub" data-i18n="c1_s">Acheteur : valeur du bien − frais de revente − capital restant dû (− IRA) + son épargne. Locataire : apport placé + écarts mensuels placés.</p>
+    <div class="legend" id="lg1"></div>
+    <div class="chartbox"><canvas id="ch1" role="img"></canvas></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h3 data-i18n="c2_t">Sorties annuelles</h3>
+      <p class="sub" data-i18n="c2_s">Ce que chaque option coûte chaque année. Le capital remboursé est de l'épargne forcée, pas une perte.</p>
+      <div class="legend" id="lg2"></div>
+      <div class="chartbox"><canvas id="ch2" role="img"></canvas></div>
+    </section>
+    <section class="card">
+      <h3 data-i18n="c3_t">Coûts non récupérables cumulés</h3>
+      <p class="sub" data-i18n="c3_s">Argent qui ne revient jamais : loyer d'un côté ; intérêts, assurance, taxes, charges, entretien, frais d'achat et coût d'opportunité de l'apport de l'autre.</p>
+      <div class="legend" id="lg3"></div>
+      <div class="chartbox"><canvas id="ch3" role="img"></canvas></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="card">
+      <h3 data-i18n="c4_t">Amortissement du prêt</h3>
+      <p class="sub" data-i18n="c4_s">Capital restant dû et cumul des intérêts et du capital remboursés.</p>
+      <div class="legend" id="lg4"></div>
+      <div class="chartbox"><canvas id="ch4" role="img"></canvas></div>
+    </section>
+    <section class="card">
+      <h3 data-i18n="c5_t">Frais d'acquisition</h3>
+      <p class="sub" id="c5sub"></p>
+      <div class="costlist" id="costs"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h3 data-i18n="c6_t">Sensibilité : écart de patrimoine à l'horizon</h3>
+    <p class="sub" data-i18n="c6_s">Acheter − louer, selon la valorisation annuelle du bien et le rendement du placement. Bleu : l'achat gagne. Rouge : la location gagne. Case encadrée : vos hypothèses les plus proches.</p>
+    <div class="heat-wrap" id="heat"></div>
+    <div class="axis-cap" data-i18n="c6_x">→ valorisation annuelle du bien ; ↓ rendement net du placement</div>
+  </section>
+
+  <section class="card">
+    <details class="tbl"><summary data-i18n="tbl_t">Tableau annuel détaillé</summary><div class="tbl-wrap" id="tbl"></div></details>
+  </section>
+</main>
+</div>
+</div>
+
+<div id="view-guide" hidden>
+  <div class="guide">
+    <nav id="guide-nav" aria-label="Guide"></nav>
+    <article id="guide"></article>
+  </div>
+</div>
+
+<div id="tip" role="tooltip" hidden></div>
+<footer class="foot" data-i18n="foot">Outil pédagogique, pas un conseil financier ou juridique. Les frais de notaire exacts dépendent du département et de l'acte ; demandez une simulation à votre notaire et à votre banque.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const I18N = {
+fr:{
+ h_rent:"Louer",h_or:"ou",h_buy:"acheter",tagline:"Simulateur patrimonial pour votre résidence principale en France : tous les frais, le crédit, et l'alternative « louer et placer sans risque ».",
+ tab_sim:"Simulateur",tab_guide:"Guide de l'achat en France",
+ g_rent:"Location actuelle",l_rent:"Loyer + charges",u_month:"/ mois",l_rentG:"Hausse loyer / an",l_renterIns:"Assur. locataire / an",n_rent:"IRL T2 2026 : +1,15 % sur un an (INSEE).",
+ g_prop:"Le bien",l_price:"Prix net vendeur",l_ptype:"Type",o_ancien:"Ancien",o_neuf:"Neuf (VEFA)",l_agency:"Honoraires agence",l_dmto:"Droits de mutation (DMTO)",
+ o_dmto632:"6,32 % — taux majoré (89 dép.)",o_dmto581:"5,81 % — primo-accédant / dép. non majoré",o_dmto509:"5,09 % — Indre",
+ l_notaryMode:"Frais de notaire",o_auto:"Calcul auto",o_manual:"Manuel (%)",l_notaryPct:"% du prix",
+ n_prop:"Si l'annonce est « FAI » (frais d'agence inclus), saisissez le prix net vendeur et les honoraires séparément : les frais de notaire se calculent hors honoraires.",
+ g_loan:"Financement",l_apport:"Apport",l_income:"Revenus nets / mois",l_rate:"Taux nominal",l_years:"Durée",u_years:"ans",l_ins:"Assurance emprunteur",l_guar:"Garantie (caution)",l_dossier:"Frais de dossier",l_broker:"Courtier",
+ n_loan:"Taux moyens sept. 2026 (Pretto) : 3,43 % sur 15 ans, 3,54 % sur 20 ans, 3,61 % sur 25 ans. Assurance : % annuel du capital initial.",
+ g_own:"Coûts de propriétaire",l_tf:"Taxe foncière / an",l_tfG:"Hausse TF / an",l_copro:"Charges copro / mois",l_maint:"Entretien / an",u_ofvalue:"% val.",l_ownerIns:"Assurance habitation propriétaire / an",
+ n_own:"Charges copro : la part non récupérable que vous payez en plus en devenant propriétaire (travaux votés, fonds travaux, syndic…).",
+ g_app:"Valorisation & revente",l_appMode:"Mode",o_const:"Taux annuel constant",o_blocks:"Par périodes de 5 ans",l_app:"Valorisation / an",l_blocks:"Valorisation / an, par période",l_sell:"Frais de revente",l_horizon:"Horizon",
+ l_ira:"Inclure les indemnités de remboursement anticipé (IRA) si le prêt n'est pas terminé à l'horizon",
+ n_app:"INSEE T2 2026 : prix de l'ancien −0,8 % sur un an (maisons −1,3 %). La plus-value sur la résidence principale est exonérée d'impôt.",
+ g_inv:"Placement sans risque",l_preset:"Support",o_fe:"Fonds euros assurance-vie — 2,15 % net",o_la:"Livret A / LDDS — 1,7 % net",o_lep:"LEP (sous conditions) — 2,5 % net",o_mix:"Mix livrets + fonds euros — 1,9 % net",o_custom:"Personnalisé",
+ l_inv:"Rendement net / an",l_infl:"Inflation / an",l_real:"Afficher en euros constants (corrigés de l'inflation)",
+ n_inv:"Tous les taux sont nominaux (inflation incluse). Fonds euros : 2,6 % en 2025, moins 17,2 % de prélèvements sociaux ≈ 2,15 % net. Inflation : 2,4 % sur un an en août 2026 (INSEE), cible BCE 2 %.",v_real:"En euros d'aujourd'hui (inflation {i}/an) : {x}.",v_nom:"En euros courants de l'année {h} : {x}.",rr:"Taux réels (après inflation) : placement {a} · crédit {b} · valorisation {c} · loyer {d}.",
+ c1_t:"Patrimoine net : acheter vs louer et placer",c1_s:"Acheteur : valeur du bien − frais de revente − capital restant dû (− IRA) + son épargne. Locataire : apport placé + écarts mensuels placés.",
+ c2_t:"Sorties annuelles",c2_s:"Ce que chaque option coûte chaque année. Le capital remboursé est de l'épargne forcée, pas une perte.",
+ c3_t:"Coûts non récupérables cumulés",c3_s:"Argent qui ne revient jamais : le loyer d'un côté ; intérêts, assurance, taxes, charges, entretien, frais d'achat et coût d'opportunité de l'apport de l'autre.",
+ c4_t:"Amortissement du prêt",c4_s:"Capital restant dû et cumul des intérêts et du capital remboursés.",
+ c5_t:"Frais d'acquisition",c6_t:"Sensibilité : écart de patrimoine à l'horizon",
+ c6_s:"Acheter − louer, selon la valorisation annuelle du bien et le rendement du placement. Bleu : l'achat gagne. Rouge : la location gagne. Case encadrée : vos hypothèses les plus proches.",
+ c6_x:"→ valorisation annuelle du bien ; ↓ rendement net du placement",tbl_t:"Tableau annuel détaillé",
+ foot:"Outil pédagogique, pas un conseil financier ou juridique. Les frais exacts dépendent du département, de l'acte et de votre banque : demandez une simulation à votre notaire et à votre banquier ou courtier.",
+ // dynamic
+ s_buy:"Acheter",s_rent:"Louer et placer",yr:"an",year:"Année",
+ v_eyebrow:"Verdict à {h} ans",v_buy:"<span class='buy'>Acheter</span> vous rend plus riche de {x}",v_rent:"<span class='rent'>Louer et placer</span> vous rend plus riche de {x}",
+ v_be:"Point d'équilibre : l'achat devient gagnant à partir de l'année {y}.",v_nobe:"L'achat ne rattrape pas la location dans l'horizon choisi.",v_always:"L'achat est gagnant dès la première année.",
+ v_detail:"Patrimoine acheteur {b} vs locataire {r}. Loyer d'équilibre : {br}/mois. Valorisation d'équilibre : {ba}/an.",
+ k_pay:"Mensualité crédit + assurance",k_pay_s:"dont assurance {x}",k_own:"Coût mensuel propriétaire (an 1)",k_own_s:"vs loyer {x}",k_loan:"Montant emprunté",k_loan_s:"TAEG estimé {x}",
+ k_debt:"Taux d'endettement",k_debt_ok:"≤ 35 % (règle HCSF)",k_debt_bad:"> 35 % : refus probable",k_debt_na:"Saisissez vos revenus",
+ k_cost:"Coût total du crédit",k_cost_s:"intérêts {i} + assurance {a}",k_cash:"Frais d'achat",k_cash_s:"{x} du prix",
+ k_be:"Loyer d'équilibre",k_be_s:"au-dessus, acheter gagne à {h} ans",k_dur:"Durée > 25 ans : hors norme HCSF",k_bey:"Point d'équilibre",k_bey_s:"année où acheter dépasse louer",k_bey_no:"pas atteint en {h} ans",
+ f_agency:"Honoraires d'agence",f_dmto:"Droits de mutation (DMTO)",f_emol:"Émoluments du notaire (TTC)",f_csi:"Contribution de sécurité immobilière",f_form:"Formalités & débours (est.)",f_manual:"Frais de notaire (manuel)",f_guar:"Garantie du prêt",f_dossier:"Frais de dossier",f_broker:"Courtier",f_total:"Total des frais",
+ c5_sub:"{x} au-dessus du prix, soit {p} du prix. Ces frais sont perdus à la revente.",
+ lg_prin:"Capital remboursé",lg_int:"Intérêts",lg_ins:"Assurance emprunteur",lg_tax:"Taxe foncière",lg_oth:"Charges, entretien, assurance",lg_rent:"Loyer + assurance",
+ lg_bal:"Capital restant dû",lg_ci:"Intérêts cumulés",lg_cp:"Capital remboursé cumulé",lg_ub:"Acheter : coûts non récupérables",lg_ur:"Louer : loyers payés",lg_be:"Équilibre",
+ t_nwB:"Patrimoine acheteur",t_nwR:"Patrimoine locataire",t_diff:"Écart",t_val:"Valeur du bien",t_bal:"Restant dû",t_outB:"Sorties acheteur",t_outR:"Sorties locataire",
+ real_note:"(euros constants)"
+},
+pt:{
+ h_rent:"Alugar",h_or:"ou",h_buy:"comprar",tagline:"Simulador patrimonial para a residência principal na França: todos os custos, o financiamento e a alternativa « alugar e investir sem risco ».",
+ tab_sim:"Simulador",tab_guide:"Guia da compra na França",
+ g_rent:"Aluguel atual",l_rent:"Aluguel + charges",u_month:"/ mês",l_rentG:"Reajuste aluguel / ano",l_renterIns:"Seguro locatário / ano",n_rent:"IRL T2 2026: +1,15 % em um ano (INSEE). É o índice que limita o reajuste anual do aluguel.",
+ g_prop:"O imóvel",l_price:"Preço líquido do vendedor",l_ptype:"Tipo",o_ancien:"Usado (ancien)",o_neuf:"Novo (VEFA)",l_agency:"Honorários da imobiliária",l_dmto:"Impostos de transmissão (DMTO)",
+ o_dmto632:"6,32 % — taxa majorada (89 dep.)",o_dmto581:"5,81 % — primeiro imóvel / dep. não majorado",o_dmto509:"5,09 % — Indre",
+ l_notaryMode:"Frais de notaire",o_auto:"Cálculo automático",o_manual:"Manual (%)",l_notaryPct:"% do preço",
+ n_prop:"Se o anúncio for « FAI » (honorários incluídos), informe o preço líquido e os honorários separadamente: os frais de notaire são calculados sem os honorários.",
+ g_loan:"Financiamento",l_apport:"Entrada (apport)",l_income:"Renda líquida / mês",l_rate:"Taxa de juros",l_years:"Prazo",u_years:"anos",l_ins:"Seguro do empréstimo",l_guar:"Garantia (caution)",l_dossier:"Tarifa de dossiê",l_broker:"Corretor de crédito",
+ n_loan:"Taxas médias set. 2026 (Pretto): 3,43 % em 15 anos, 3,54 % em 20 anos, 3,61 % em 25 anos. Seguro: % anual sobre o capital inicial.",
+ g_own:"Custos do proprietário",l_tf:"Taxe foncière / ano",l_tfG:"Aumento TF / ano",l_copro:"Condomínio / mês",l_maint:"Manutenção / ano",u_ofvalue:"% valor",l_ownerIns:"Seguro residencial do proprietário / ano",
+ n_own:"Condomínio: a parte não repassável ao inquilino que você passa a pagar como proprietário (obras votadas, fundo de obras, síndico…).",
+ g_app:"Valorização & revenda",l_appMode:"Modo",o_const:"Taxa anual constante",o_blocks:"Por períodos de 5 anos",l_app:"Valorização / ano",l_blocks:"Valorização / ano, por período",l_sell:"Custos de revenda",l_horizon:"Horizonte",
+ l_ira:"Incluir multa de quitação antecipada (IRA) se o empréstimo não tiver terminado no horizonte",
+ n_app:"INSEE T2 2026: preços dos imóveis usados −0,8 % em um ano (casas −1,3 %). O ganho de capital na residência principal é isento de imposto.",
+ g_inv:"Investimento sem risco",l_preset:"Aplicação",o_fe:"Fonds euros (assurance-vie) — 2,15 % líq.",o_la:"Livret A / LDDS — 1,7 % líq.",o_lep:"LEP (sob condições) — 2,5 % líq.",o_mix:"Mix livrets + fonds euros — 1,9 % líq.",o_custom:"Personalizado",
+ l_inv:"Rendimento líquido / ano",l_infl:"Inflação / ano",l_real:"Mostrar em euros constantes (descontada a inflação)",
+ n_inv:"Todas as taxas são nominais (inflação incluída). Fonds euros: 2,6 % em 2025, menos 17,2 % de prélèvements sociaux ≈ 2,15 % líquido. Inflação: 2,4 % em 12 meses em agosto de 2026 (INSEE), meta do BCE 2 %.",v_real:"Em euros de hoje (inflação de {i}/ano): {x}.",v_nom:"Em euros correntes do ano {h}: {x}.",rr:"Taxas reais (descontada a inflação): investimento {a} · crédito {b} · valorização {c} · aluguel {d}.",
+ c1_t:"Patrimônio líquido: comprar vs alugar e investir",c1_s:"Comprador: valor do imóvel − custos de revenda − saldo devedor (− IRA) + suas economias. Inquilino: entrada investida + diferenças mensais investidas.",
+ c2_t:"Desembolsos anuais",c2_s:"Quanto cada opção custa por ano. A amortização do capital é poupança forçada, não perda.",
+ c3_t:"Custos irrecuperáveis acumulados",c3_s:"Dinheiro que nunca volta: aluguel de um lado; juros, seguro, impostos, condomínio, manutenção, custos de compra e custo de oportunidade da entrada do outro.",
+ c4_t:"Amortização do empréstimo",c4_s:"Saldo devedor e acumulado de juros e de capital pagos.",
+ c5_t:"Custos de aquisição",c6_t:"Sensibilidade: diferença de patrimônio no horizonte",
+ c6_s:"Comprar − alugar, conforme a valorização anual do imóvel e o rendimento do investimento. Azul: comprar ganha. Vermelho: alugar ganha. Célula contornada: a mais próxima das suas hipóteses.",
+ c6_x:"→ valorização anual do imóvel ; ↓ rendimento líquido do investimento",tbl_t:"Tabela anual detalhada",
+ foot:"Ferramenta educativa, não é aconselhamento financeiro nem jurídico. Os custos exatos dependem do departamento, da escritura e do banco: peça uma simulação ao notário e ao banco ou corretor.",
+ s_buy:"Comprar",s_rent:"Alugar e investir",yr:"ano",year:"Ano",
+ v_eyebrow:"Veredito em {h} anos",v_buy:"<span class='buy'>Comprar</span> deixa você {x} mais rico",v_rent:"<span class='rent'>Alugar e investir</span> deixa você {x} mais rico",
+ v_be:"Ponto de equilíbrio: comprar passa a compensar a partir do ano {y}.",v_nobe:"A compra não alcança o aluguel dentro do horizonte escolhido.",v_always:"Comprar compensa desde o primeiro ano.",
+ v_detail:"Patrimônio comprador {b} vs inquilino {r}. Aluguel de equilíbrio: {br}/mês. Valorização de equilíbrio: {ba}/ano.",
+ k_pay:"Parcela crédito + seguro",k_pay_s:"dos quais seguro {x}",k_own:"Custo mensal proprietário (ano 1)",k_own_s:"vs aluguel {x}",k_loan:"Valor financiado",k_loan_s:"CET (TAEG) estimado {x}",
+ k_debt:"Comprometimento da renda",k_debt_ok:"≤ 35 % (regra HCSF)",k_debt_bad:"> 35 %: recusa provável",k_debt_na:"Informe sua renda",
+ k_cost:"Custo total do crédito",k_cost_s:"juros {i} + seguro {a}",k_cash:"Custos de compra",k_cash_s:"{x} do preço",
+ k_be:"Aluguel de equilíbrio",k_be_s:"acima disso, comprar ganha em {h} anos",k_dur:"Prazo > 25 anos: fora da norma HCSF",k_bey:"Ponto de equilíbrio",k_bey_s:"ano em que comprar supera alugar",k_bey_no:"não atingido em {h} anos",
+ f_agency:"Honorários da imobiliária",f_dmto:"Impostos de transmissão (DMTO)",f_emol:"Emolumentos do notário (c/ IVA)",f_csi:"Contribuição de segurança imobiliária",f_form:"Formalidades e despesas (est.)",f_manual:"Frais de notaire (manual)",f_guar:"Garantia do empréstimo",f_dossier:"Tarifa de dossiê",f_broker:"Corretor",f_total:"Total dos custos",
+ c5_sub:"{x} além do preço, ou {p} do preço. Esses custos são perdidos na revenda.",
+ lg_prin:"Capital amortizado",lg_int:"Juros",lg_ins:"Seguro do empréstimo",lg_tax:"Taxe foncière",lg_oth:"Condomínio, manutenção, seguro",lg_rent:"Aluguel + seguro",
+ lg_bal:"Saldo devedor",lg_ci:"Juros acumulados",lg_cp:"Capital amortizado acumulado",lg_ub:"Comprar: custos irrecuperáveis",lg_ur:"Alugar: aluguéis pagos",lg_be:"Equilíbrio",
+ t_nwB:"Patrimônio comprador",t_nwR:"Patrimônio inquilino",t_diff:"Diferença",t_val:"Valor do imóvel",t_bal:"Saldo devedor",t_outB:"Desembolso comprador",t_outR:"Desembolso inquilino",
+ real_note:"(euros constantes)"
+},
+en:{
+ h_rent:"Rent",h_or:"or",h_buy:"buy",tagline:"Net-worth simulator for your main home in France: every purchase cost, the mortgage, and the alternative of renting and investing risk-free.",
+ tab_sim:"Simulator",tab_guide:"Buying in France: guide",
+ g_rent:"Current rental",l_rent:"Rent + charges",u_month:"/ month",l_rentG:"Rent increase / yr",l_renterIns:"Renter insurance / yr",n_rent:"IRL Q2 2026: +1.15% year on year (INSEE). It caps annual rent increases.",
+ g_prop:"The property",l_price:"Net seller price",l_ptype:"Type",o_ancien:"Existing (ancien)",o_neuf:"New build (VEFA)",l_agency:"Agency fees",l_dmto:"Transfer taxes (DMTO)",
+ o_dmto632:"6.32% — increased rate (89 depts.)",o_dmto581:"5.81% — first-time buyer / non-increased dept.",o_dmto509:"5.09% — Indre",
+ l_notaryMode:"Notary fees",o_auto:"Auto calculation",o_manual:"Manual (%)",l_notaryPct:"% of price",
+ n_prop:"If the listing says “FAI” (agency fees included), enter the net seller price and the agency fee separately: notary fees are computed excluding agency fees.",
+ g_loan:"Financing",l_apport:"Down payment",l_income:"Net income / month",l_rate:"Interest rate",l_years:"Term",u_years:"yrs",l_ins:"Loan insurance",l_guar:"Guarantee (caution)",l_dossier:"Bank fees",l_broker:"Broker",
+ n_loan:"Average rates Sept 2026 (Pretto): 3.43% over 15 yrs, 3.54% over 20 yrs, 3.61% over 25 yrs. Insurance: annual % of the initial loan.",
+ g_own:"Owner costs",l_tf:"Property tax / yr",l_tfG:"Property tax growth / yr",l_copro:"Condo charges / month",l_maint:"Maintenance / yr",u_ofvalue:"% value",l_ownerIns:"Owner home insurance / yr",
+ n_own:"Condo charges: the non-recoverable share you start paying as an owner (voted works, works fund, managing agent…).",
+ g_app:"Appreciation & resale",l_appMode:"Mode",o_const:"Constant annual rate",o_blocks:"By 5-year periods",l_app:"Appreciation / yr",l_blocks:"Appreciation / yr, per period",l_sell:"Selling costs",l_horizon:"Horizon",
+ l_ira:"Include early-repayment penalties (IRA) if the loan is not finished at the horizon",
+ n_app:"INSEE Q2 2026: existing-home prices −0.8% year on year (houses −1.3%). Capital gains on a main residence are tax-free.",
+ g_inv:"Risk-free investment",l_preset:"Product",o_fe:"Euro fund (life insurance) — 2.15% net",o_la:"Livret A / LDDS — 1.7% net",o_lep:"LEP (means-tested) — 2.5% net",o_mix:"Savings accounts + euro fund — 1.9% net",o_custom:"Custom",
+ l_inv:"Net return / yr",l_infl:"Inflation / yr",l_real:"Show in constant euros (inflation-adjusted)",
+ n_inv:"All rates are nominal (inflation included). Euro funds: 2.6% in 2025, minus 17.2% social charges ≈ 2.15% net. Inflation: 2.4% year on year in August 2026 (INSEE), ECB target 2%.",v_real:"In today's euros (inflation {i}/yr): {x}.",v_nom:"In current euros of year {h}: {x}.",rr:"Real rates (after inflation): investment {a} · loan {b} · appreciation {c} · rent {d}.",
+ c1_t:"Net worth: buy vs rent and invest",c1_s:"Buyer: home value − selling costs − outstanding loan (− IRA) + their savings. Renter: invested down payment + invested monthly differences.",
+ c2_t:"Annual cash outflows",c2_s:"What each option costs every year. Principal repaid is forced saving, not a loss.",
+ c3_t:"Cumulative unrecoverable costs",c3_s:"Money that never comes back: rent on one side; interest, insurance, taxes, charges, maintenance, purchase fees and the opportunity cost of the down payment on the other.",
+ c4_t:"Loan amortization",c4_s:"Outstanding balance and cumulative interest and principal paid.",
+ c5_t:"Purchase costs",c6_t:"Sensitivity: net-worth gap at the horizon",
+ c6_s:"Buy − rent, by annual home appreciation and investment return. Blue: buying wins. Red: renting wins. Outlined cell: closest to your assumptions.",
+ c6_x:"→ annual home appreciation ; ↓ net investment return",tbl_t:"Detailed yearly table",
+ foot:"Educational tool, not financial or legal advice. Exact costs depend on the département, the deed and your bank: ask your notary and your bank or broker for a quote.",
+ s_buy:"Buy",s_rent:"Rent & invest",yr:"yr",year:"Year",
+ v_eyebrow:"Verdict after {h} years",v_buy:"<span class='buy'>Buying</span> leaves you {x} richer",v_rent:"<span class='rent'>Renting and investing</span> leaves you {x} richer",
+ v_be:"Break-even: buying pulls ahead from year {y}.",v_nobe:"Buying does not catch up with renting within the chosen horizon.",v_always:"Buying is ahead from the first year.",
+ v_detail:"Buyer net worth {b} vs renter {r}. Break-even rent: {br}/month. Break-even appreciation: {ba}/yr.",
+ k_pay:"Loan + insurance payment",k_pay_s:"incl. insurance {x}",k_own:"Monthly owner cost (year 1)",k_own_s:"vs rent {x}",k_loan:"Loan amount",k_loan_s:"Estimated APR (TAEG) {x}",
+ k_debt:"Debt-to-income",k_debt_ok:"≤ 35% (HCSF rule)",k_debt_bad:"> 35%: likely refused",k_debt_na:"Enter your income",
+ k_cost:"Total cost of credit",k_cost_s:"interest {i} + insurance {a}",k_cash:"Purchase costs",k_cash_s:"{x} of price",
+ k_be:"Break-even rent",k_be_s:"above it, buying wins at {h} yrs",k_dur:"Term > 25 yrs: outside HCSF norm",k_bey:"Break-even year",k_bey_s:"when buying overtakes renting",k_bey_no:"not reached in {h} yrs",
+ f_agency:"Agency fees",f_dmto:"Transfer taxes (DMTO)",f_emol:"Notary emoluments (incl. VAT)",f_csi:"Property security contribution",f_form:"Formalities & disbursements (est.)",f_manual:"Notary fees (manual)",f_guar:"Loan guarantee",f_dossier:"Bank fees",f_broker:"Broker",f_total:"Total costs",
+ c5_sub:"{x} on top of the price, i.e. {p} of the price. These costs are lost at resale.",
+ lg_prin:"Principal repaid",lg_int:"Interest",lg_ins:"Loan insurance",lg_tax:"Property tax",lg_oth:"Charges, maintenance, insurance",lg_rent:"Rent + insurance",
+ lg_bal:"Outstanding balance",lg_ci:"Cumulative interest",lg_cp:"Cumulative principal",lg_ub:"Buy: unrecoverable costs",lg_ur:"Rent: rent paid",lg_be:"Break-even",
+ t_nwB:"Buyer net worth",t_nwR:"Renter net worth",t_diff:"Gap",t_val:"Home value",t_bal:"Balance",t_outB:"Buyer outflow",t_outR:"Renter outflow",
+ real_note:"(constant euros)"
+}};
+const LOCALE={fr:"fr-FR",pt:"pt-BR",en:"en-GB"};
+const SOURCES = `<ul>
+<li><a href="https://www.pretto.fr/taux-immobilier/historique-taux-immobilier/2026/analyse-taux-immobilier-septembre-2026/" target="_blank" rel="noopener">Pretto — taux immobiliers septembre 2026</a></li>
+<li><a href="https://presse.economie.gouv.fr/?p=181486" target="_blank" rel="noopener">Ministère de l'Économie — Livret A 1,7 %, LEP 2,5 % au 1er août 2026</a></li>
+<li><a href="https://placement.meilleurtaux.com/assurance-vie/actualites/2026-mars/assurance-vie-2025-fonds-euros-a-2-6-selon-france-assureurs.html" target="_blank" rel="noopener">Meilleurtaux Placement — fonds euros 2025 à 2,6 % (France Assureurs)</a></li>
+<li><a href="https://placement.meilleurtaux.com/placement-financier/actualites/2026-avril/flat-tax-a-31-4-ce-qui-change-depuis-janvier-2026.html" target="_blank" rel="noopener">Meilleurtaux Placement — flat tax 31,4 % en 2026</a></li>
+<li><a href="https://www.mesfraisnotaire.fr/dmto-2026-comprendre-les-taux" target="_blank" rel="noopener">Mes Frais de Notaire — DMTO 2026 (6,32 % / 5,81 % / 5,09 %)</a></li>
+<li><a href="https://www.insee.fr/fr/statistiques/9040119" target="_blank" rel="noopener">INSEE — prix des logements anciens, T2 2026</a></li>
+<li><a href="https://www.insee.fr/fr/statistiques/9022797" target="_blank" rel="noopener">INSEE — IRL T2 2026 (+1,15 %)</a></li>
+<li><a href="https://www.meilleurtaux.com/assurance-de-pret/le-guide-de-l-assurance-de-pret/taux-assurance-pret-immobilier.html" target="_blank" rel="noopener">Meilleurtaux — taux d'assurance emprunteur 2026</a></li>
+<li><a href="https://www.pretto.fr/pret-immobilier/garantie/frais-garantie/" target="_blank" rel="noopener">Pretto — frais de garantie (caution, hypothèque, PPD)</a></li>
+<li><a href="https://www.hestia.fr/blog/evolution-ptz" target="_blank" rel="noopener">Hestia — PTZ 2026-2027</a></li>
+<li><a href="https://www.impots.gouv.fr/particulier/questions/comment-est-calculee-ma-taxe-fonciere-pourquoi-t-elle-augmente-en-2026" target="_blank" rel="noopener">impots.gouv.fr — taxe foncière 2026</a></li>
+<li><a href="https://www.insee.fr/fr/statistiques/9051406" target="_blank" rel="noopener">INSEE — inflation août 2026 (+2,4 %)</a></li>
+<li><a href="https://www.meilleurtaux.com/espace-presse/communiques-de-presse/acheter-ou-louer-12eme-edition.html" target="_blank" rel="noopener">Meilleurtaux — étude « Acheter ou louer » 2025</a></li>
+<li><a href="https://www.simulargent.fr/simulateur-achat-location" target="_blank" rel="noopener">SimulArgent — simulateur achat/location</a></li>
+<li><a href="https://sinvestir.fr/acheter-ou-louer-sa-residence-principale/" target="_blank" rel="noopener">Sinvestir — acheter ou louer sa résidence principale</a></li>
+<li><a href="https://avenuedesinvestisseurs.fr/acheter-ou-louer-immobilier-simulation/" target="_blank" rel="noopener">Avenue des Investisseurs — outil acheter ou louer</a></li>
+<li><a href="https://www.simupatri.fr/simulateur-residence-principale" target="_blank" rel="noopener">Simupatri — simulateur résidence principale</a></li>
+</ul>`;
+
+const GUIDE = {
+fr:[
+{id:"etapes",t:"1. Les étapes d'un achat",h:`
+<ol>
+<li><strong>Budget et capacité d'emprunt.</strong> Les banques appliquent la règle du HCSF : mensualité (assurance comprise) ≤ <strong>35 %</strong> des revenus nets, durée ≤ <strong>25 ans</strong> (27 ans dans le neuf avec différé). L'apport couvre en général au moins les frais (≈ 10 % du prix).</li>
+<li><strong>Simulation bancaire ou courtier.</strong> Une attestation de financement renforce votre offre.</li>
+<li><strong>Offre d'achat</strong> écrite au vendeur (prix, conditions, durée de validité).</li>
+<li><strong>Compromis ou promesse de vente</strong> chez le notaire ou l'agence : dépôt de garantie de 5 à 10 %, <strong>10 jours de rétractation</strong> pour l'acheteur, condition suspensive d'obtention du prêt (souvent 45 à 60 jours). Diagnostics obligatoires (DPE, amiante, plomb, électricité…).</li>
+<li><strong>Demande de prêt, offre de prêt</strong> : délai de réflexion légal de <strong>10 jours</strong> avant acceptation. Choix de l'assurance emprunteur (délégation possible, loi Lemoine : changement à tout moment).</li>
+<li><strong>Acte authentique</strong> chez le notaire, environ 3 mois après le compromis : paiement du prix et des frais, remise des clés.</li>
+<li><strong>Après l'achat</strong> : assurance habitation, taxe foncière chaque automne, charges et assemblées de copropriété.</li>
+</ol>`},
+{id:"notaire",t:"2. Frais de notaire",h:`
+<p>Improprement appelés « frais de notaire », ils sont surtout des <strong>taxes</strong>. Dans l'ancien, comptez environ <strong>7,5 à 8,5 %</strong> du prix ; dans le neuf, <strong>2 à 3 %</strong>.</p>
+<div class="tw"><table>
+<tr><th>Poste</th><th>Montant</th><th>Commentaire</th></tr>
+<tr><td>Droits de mutation (DMTO)</td><td class="n">6,32 %</td><td>Taux majoré voté par 89 départements (avril 2025 → mars 2028) pour les non primo-accédants.</td></tr>
+<tr><td></td><td class="n">5,81 %</td><td>Primo-accédants éligibles, et tous les acheteurs dans les 11 départements non majorés.</td></tr>
+<tr><td></td><td class="n">5,09 %</td><td>Indre (part départementale réduite).</td></tr>
+<tr><td></td><td class="n">≈ 0,7 %</td><td>Neuf (VEFA) : taxe de publicité foncière réduite ; la TVA est incluse dans le prix.</td></tr>
+<tr><td>Émoluments du notaire</td><td class="n">≈ 1 %</td><td>Barème réglementé dégressif : 3,870 % jusqu'à 6 500 €, 1,596 % jusqu'à 17 000 €, 1,064 % jusqu'à 60 000 €, 0,799 % au-delà, + TVA 20 %.</td></tr>
+<tr><td>Contribution de sécurité immobilière</td><td class="n">0,10 %</td><td>Minimum 15 €.</td></tr>
+<tr><td>Formalités et débours</td><td class="n">≈ 800–1 500 €</td><td>Documents d'urbanisme, cadastre, état hypothécaire… (estimation).</td></tr>
+</table></div>
+<p>Le simulateur calcule ces postes automatiquement ; vous pouvez aussi saisir un pourcentage fourni par votre notaire. Astuce légale : le mobilier vendu avec le bien (cuisine équipée…) peut être déduit de l'assiette des droits, dans des limites raisonnables.</p>`},
+{id:"agence",t:"3. Honoraires d'agence",h:`
+<p>Libres, en général <strong>3 à 8 %</strong> du prix, dégressifs. Ils sont à la charge du vendeur ou de l'acquéreur selon le mandat. Quand ils sont à la charge de l'acquéreur, l'annonce doit indiquer le prix hors honoraires et le pourcentage ; les frais de notaire se calculent alors sur le prix hors honoraires. Sans agence (vente entre particuliers) : 0 €.</p>`},
+{id:"credit",t:"4. Le crédit immobilier",h:`
+<h4>Taux (septembre 2026)</h4>
+<p>Moyennes Pretto : <strong>3,43 %</strong> sur 15 ans, <strong>3,54 %</strong> sur 20 ans, <strong>3,61 %</strong> sur 25 ans, en hausse d'environ 0,1 point sur un mois. L'OAT 10 ans est repassée au-dessus de 4 %, ce qui pousse les taux à la hausse. Un bon dossier (revenus stables, apport, épargne résiduelle) obtient mieux que la moyenne.</p>
+<h4>Assurance emprunteur</h4>
+<p>Exigée en pratique. Ordre de grandeur 2026 (non-fumeur, % annuel du capital) : ≈ 0,10 % à 25 ans, ≈ 0,24 % à 45 ans, ≈ 0,47 % à 55 ans. La délégation d'assurance est souvent 2 à 3 fois moins chère que le contrat groupe de la banque.</p>
+<h4>Garantie</h4>
+<p><strong>Caution</strong> (Crédit Logement, etc.) ≈ 0,8 à 1,5 % du prêt, partiellement restituée en fin de prêt ; <strong>hypothèque</strong> jusqu'à 2 % ; <strong>PPD / hypothèque légale spéciale</strong> ≈ 0,8 % + frais fixes (seulement sur la partie finançant l'achat dans l'ancien).</p>
+<h4>Autres frais</h4>
+<p>Frais de dossier bancaires (souvent 500–1 500 €, négociables), honoraires de courtier (0 à ≈ 1 % du prêt). Le <strong>TAEG</strong> agrège taux, assurance, garantie et frais : c'est lui qu'il faut comparer.</p>
+<h4>Aides</h4>
+<p><strong>PTZ</strong> prolongé jusqu'au 31/12/2027 : neuf (maison et appartement) dans toutes les zones, ancien avec travaux ≥ 25 % du coût total, sous conditions de revenus ; il finance au plus 50 % de l'opération. Également : prêt Action Logement, PAS. Non modélisés ici : leur effet est de baisser le taux moyen, vous pouvez donc saisir un taux « moyen pondéré » inférieur.</p>
+<h4>Remboursement anticipé</h4>
+<p>Les IRA sont plafonnées à <strong>6 mois d'intérêts</strong> et <strong>3 % du capital restant dû</strong> (le plus faible des deux). Souvent négociables à zéro, et non dues en cas de vente pour mutation professionnelle, licenciement ou décès.</p>`},
+{id:"proprio",t:"5. Coûts récurrents du propriétaire",h:`
+<ul>
+<li><strong>Taxe foncière</strong> : dépend de la valeur locative cadastrale et du taux communal. Bases revalorisées de +0,8 % en 2026 ; beaucoup de communes ont aussi relevé leurs taux. Comptez souvent l'équivalent d'1 à 2 mois de loyer par an. Neuf : exonération possible 2 ans.</li>
+<li><strong>Charges de copropriété</strong> : une partie est déjà dans vos « charges » de locataire (récupérables) ; en devenant propriétaire vous payez aussi la part non récupérable (syndic, gros travaux, fonds travaux loi ALUR).</li>
+<li><strong>Entretien et gros travaux</strong> : règle usuelle 0,5 à 1,5 % de la valeur par an (plus pour une maison ancienne ; attention aux DPE F/G et aux obligations de rénovation).</li>
+<li><strong>Assurance habitation</strong> propriétaire occupant (légèrement plus chère qu'en location).</li>
+</ul>`},
+{id:"revente",t:"6. Revente",h:`
+<p>La plus-value sur la <strong>résidence principale</strong> est totalement exonérée d'impôt et de prélèvements sociaux. En revanche, la revente coûte : honoraires d'agence (≈ 4–6 %, souvent intégrés au prix mais payés en pratique par le vendeur), diagnostics, éventuelles IRA. Ces frais d'aller-retour (≈ 12–15 % au total) expliquent pourquoi acheter est rarement rentable sur moins de 5 à 8 ans.</p>
+<p>Prix : après −5 % en 2024 et une légère reprise en 2025, l'ancien recule de nouveau (−0,8 % sur un an au T2 2026, maisons −1,3 %, Paris +0,6 %). Sur longue période, une hypothèse prudente est une hausse proche de l'inflation (0 à 2 %/an), à ajuster selon la ville.</p>`},
+{id:"placement",t:"7. Placer au lieu d'acheter : quel taux retenir ?",h:`
+<p>Seuls des supports <strong>à capital garanti</strong> sont pris en compte :</p>
+<div class="tw"><table>
+<tr><th>Support</th><th>Rendement net</th><th>Limites</th></tr>
+<tr><td>Livret A / LDDS</td><td class="n">1,7 %</td><td>Depuis le 1er août 2026. Défiscalisé. Plafonds 22 950 € et 12 000 € par personne. Révisé 2 fois par an.</td></tr>
+<tr><td>LEP</td><td class="n">2,5 %</td><td>Sous conditions de revenus, plafond 10 000 €.</td></tr>
+<tr><td>Fonds euros d'assurance-vie</td><td class="n">≈ 2,15 %</td><td>2,6 % en moyenne en 2025 (net de frais de gestion), moins 17,2 % de prélèvements sociaux (l'assurance-vie n'est pas concernée par la hausse à 18,6 %). Impôt sur le revenu nul après 8 ans dans l'abattement (4 600 € / 9 200 € de gains par an).</td></tr>
+<tr><td>CTO / livrets bancaires fiscalisés</td><td class="n">× 0,686</td><td>Flat tax 31,4 % depuis 2026 : un taux brut de 2,5 % donne ≈ 1,7 % net.</td></tr>
+</table></div>
+<div class="callout"><strong>Valeur suggérée : 2,15 % net</strong> (fonds euros), ou 1,9 % pour un mélange livrets + fonds euros si l'apport dépasse les plafonds des livrets. Sur 13 ans, les fonds euros ont rapporté 2,1 %/an en moyenne. Les actions (ETF, SCPI…) sont volontairement exclues.</div>`},
+{id:"methode",t:"8. Méthode du simulateur et limites",h:`
+<ul>
+<li>Simulation mois par mois sur l'horizon choisi. Les deux ménages dépensent le même budget : celui dont la sortie mensuelle est la plus faible place la différence au taux choisi. Le locataire place aussi l'apport dès le départ.</li>
+<li>Le coût du propriétaire = mensualité + assurance + taxe foncière + charges copro non récupérables + entretien (% de la valeur actuelle) + assurance habitation. Le loyer suit le taux de hausse saisi.</li>
+<li>Patrimoine acheteur = valeur du bien − frais de revente − capital restant dû − IRA éventuelles + épargne. Plus-value exonérée (résidence principale).</li>
+<li>Le prêt finance tout ce que l'apport ne couvre pas (prix + frais), garantie incluse.</li>
+<li>Non modélisés : PTZ et prêts aidés, restitution partielle de la caution, renégociation, avantages non financiers (stabilité, liberté de travaux) ou flexibilité de la location.</li>
+<li><strong>Inflation et valeur future de l'argent.</strong> Tous les taux saisis sont nominaux et la simulation tourne en euros courants ; les deux patrimoines sont comparés à la même date, donc le gagnant et l'année d'équilibre ne dépendent pas de l'unité. Le verdict affiche aussi l'écart en euros d'aujourd'hui (divisé par (1 + inflation)<sup>années</sup>), et la case « euros constants » convertit tous les graphiques. La mensualité d'un prêt à taux fixe ne suit pas l'inflation : une inflation plus forte (avec loyers, prix et placements qui suivent) favorise donc l'achat. Si tous les taux, crédit compris, montent d'un point, le résultat réel ne change presque pas (vérifié : 45,7 k€ contre 46,9 k€ sur l'exemple).</li>
+</ul>`},
+{id:"outils",t:"9. Comparaison avec d'autres outils",h:`
+<div class="tw"><table>
+<tr><th>Outil</th><th>Méthode</th><th>Ce qui manque / diffère</th></tr>
+<tr><td>Meilleurtaux (étude annuelle)</td><td>Durée de rentabilisation par ville, 70 m², apport 10 %, 3,22 % sur 20 ans, épargne 3 → 2 %, prix 0 → +2 %/an. 12 ans 3 mois en moyenne (Paris 21 ans, Lille 10 ans 10 mois).</td><td>Pas de saisie libre ; frais de revente, entretien et taxe foncière exacts non publiés.</td></tr>
+<tr><td>SimulArgent</td><td>Patrimoine à 20 ans, surplus mensuel placé, inflation des charges ; défauts : placement 3 %, valorisation 1,5 %.</td><td>Frais d'achat saisis en bloc ; pas d'IRA ni de frais de revente ; horizon fixe.</td></tr>
+<tr><td>Sinvestir</td><td>Flux sur 25 ans, « enrichissement » = patrimoine − coûts irrécupérables ; placement à 5 % (bourse/SCPI).</td><td>Rendement risqué ; comptabilité qui n'est pas une comparaison de patrimoines nets.</td></tr>
+<tr><td>Avenue des Investisseurs (Excel)</td><td>Patrimoine après X ans, apport + différence placés, inflation paramétrable, scénarios de valorisation.</td><td>Proche de ce simulateur ; frais de notaire en % forfaitaire.</td></tr>
+<tr><td>Simupatri</td><td>Coût net mensuel de détention vs loyer économisé.</td><td>Pas de trajectoire de patrimoine ni de placement de l'apport.</td></tr>
+</table></div>
+<h4>Recalcul avec leurs hypothèses</h4>
+<ul>
+<li><strong>Sinvestir, Montpellier</strong> : mensualité retrouvée exactement (1 571,80 €) ; capital du locataire à 25 ans 495 k€ ici contre 479 k€ chez eux (placement mensuel au lieu d'annuel). En patrimoine net, l'achat passe devant vers 5 ans ici, contre 18 ans chez eux : l'écart vient de leur méthode de calcul.</li>
+<li><strong>Meilleurtaux</strong> : avec leurs hypothèses publiées prises à la lettre (prix +2 %/an), l'équilibre arrive vers 4–5 ans (6,5–10 ans avec 5 % de frais de revente et 0,8 % d'entretien). On retrouve leurs durées avec une valorisation effective d'environ 0,5 %/an, 5 à 8 % de frais de revente et 1 % d'entretien (Paris 19,5–21 ans contre 21,1 ; Lille 10–11,5 ans contre 10,8). Leurs hypothèses effectives sont donc nettement plus prudentes que celles affichées. La valorisation et les frais de revente sont les paramètres qui pèsent le plus.</li>
+</ul>`},
+{id:"sources",t:"Sources",h:SOURCES}
+],
+pt:[
+{id:"etapes",t:"1. As etapas de uma compra",h:`
+<ol>
+<li><strong>Orçamento e capacidade de crédito.</strong> Os bancos seguem a regra do HCSF: parcela (seguro incluído) ≤ <strong>35 %</strong> da renda líquida, prazo ≤ <strong>25 anos</strong> (27 no imóvel novo com carência). A entrada geralmente cobre pelo menos os custos (≈ 10 % do preço).</li>
+<li><strong>Simulação no banco ou com corretor de crédito (courtier).</strong> Uma carta de financiamento fortalece a proposta.</li>
+<li><strong>Offre d'achat</strong>: proposta escrita ao vendedor (preço, condições, validade).</li>
+<li><strong>Compromis / promesse de vente</strong> no notário ou na imobiliária: sinal de 5 a 10 %, <strong>10 dias de arrependimento</strong> para o comprador, cláusula suspensiva de obtenção do crédito (geralmente 45 a 60 dias). Diagnósticos obrigatórios (DPE, amianto, chumbo, elétrica…).</li>
+<li><strong>Pedido e oferta de empréstimo</strong>: prazo legal de reflexão de <strong>10 dias</strong> antes de aceitar. Escolha do seguro (delegação possível; lei Lemoine permite trocar a qualquer momento).</li>
+<li><strong>Acte authentique</strong> (escritura) no notário, cerca de 3 meses após o compromis: pagamento do preço e dos custos, entrega das chaves.</li>
+<li><strong>Depois da compra</strong>: seguro residencial, taxe foncière todo outono, condomínio e assembleias.</li>
+</ol>`},
+{id:"notaire",t:"2. Frais de notaire",h:`
+<p>Chamados de « frais de notaire », são na maior parte <strong>impostos</strong>. Em imóvel usado conte cerca de <strong>7,5 a 8,5 %</strong> do preço; em imóvel novo, <strong>2 a 3 %</strong>.</p>
+<div class="tw"><table>
+<tr><th>Item</th><th>Valor</th><th>Comentário</th></tr>
+<tr><td>Impostos de transmissão (DMTO)</td><td class="n">6,32 %</td><td>Taxa majorada votada por 89 departamentos (abr. 2025 → mar. 2028) para quem não é primeiro comprador.</td></tr>
+<tr><td></td><td class="n">5,81 %</td><td>Primeiros compradores elegíveis, e todos nos 11 departamentos sem majoração.</td></tr>
+<tr><td></td><td class="n">5,09 %</td><td>Indre (parte departamental reduzida).</td></tr>
+<tr><td></td><td class="n">≈ 0,7 %</td><td>Novo (VEFA): taxa reduzida; o IVA já está no preço.</td></tr>
+<tr><td>Emolumentos do notário</td><td class="n">≈ 1 %</td><td>Tabela regulamentada decrescente: 3,870 % até 6 500 €, 1,596 % até 17 000 €, 1,064 % até 60 000 €, 0,799 % acima, + IVA 20 %.</td></tr>
+<tr><td>Contribuição de segurança imobiliária</td><td class="n">0,10 %</td><td>Mínimo 15 €.</td></tr>
+<tr><td>Formalidades e despesas</td><td class="n">≈ 800–1 500 €</td><td>Documentos urbanísticos, cadastro, certidões… (estimativa).</td></tr>
+</table></div>
+<p>O simulador calcula esses itens automaticamente; você também pode informar um percentual dado pelo seu notário. Dica legal: móveis vendidos junto (cozinha equipada…) podem ser deduzidos da base dos impostos, dentro de limites razoáveis.</p>`},
+{id:"agence",t:"3. Honorários da imobiliária",h:`
+<p>Livres, em geral <strong>3 a 8 %</strong> do preço, decrescentes. Ficam a cargo do vendedor ou do comprador conforme o mandato. Quando o comprador paga, o anúncio deve mostrar o preço sem honorários e o percentual; os frais de notaire são então calculados sobre o preço sem honorários. Venda direta entre particulares: 0 €.</p>`},
+{id:"credit",t:"4. O financiamento",h:`
+<h4>Taxas (setembro de 2026)</h4>
+<p>Médias Pretto: <strong>3,43 %</strong> em 15 anos, <strong>3,54 %</strong> em 20 anos, <strong>3,61 %</strong> em 25 anos, alta de ~0,1 ponto em um mês. A OAT de 10 anos voltou a ficar acima de 4 %, pressionando as taxas para cima. Um bom perfil (renda estável, entrada, poupança restante) consegue melhor que a média.</p>
+<h4>Seguro do empréstimo</h4>
+<p>Exigido na prática. Ordem de grandeza 2026 (não fumante, % anual do capital): ≈ 0,10 % aos 25 anos, ≈ 0,24 % aos 45, ≈ 0,47 % aos 55. Um seguro externo (délégation) costuma ser 2 a 3 vezes mais barato que o contrato do banco.</p>
+<h4>Garantia</h4>
+<p><strong>Caution</strong> (Crédit Logement etc.) ≈ 0,8 a 1,5 % do empréstimo, parcialmente devolvida no fim; <strong>hipoteca</strong> até 2 %; <strong>PPD / hipoteca legal especial</strong> ≈ 0,8 % + custos fixos.</p>
+<h4>Outros custos</h4>
+<p>Tarifa de dossiê do banco (em geral 500–1 500 €, negociável), honorários do corretor (0 a ≈ 1 % do empréstimo). O <strong>TAEG</strong> (equivalente ao CET) soma juros, seguro, garantia e tarifas: é ele que se deve comparar.</p>
+<h4>Ajudas</h4>
+<p><strong>PTZ</strong> (empréstimo a juro zero) prorrogado até 31/12/2027: imóvel novo (casa e apartamento) em todas as zonas, usado com obras ≥ 25 % do custo total, sujeito a teto de renda; financia no máximo 50 % da operação. Também: empréstimo Action Logement, PAS. Não modelados aqui: eles reduzem a taxa média, então você pode informar uma taxa média ponderada menor.</p>
+<h4>Quitação antecipada</h4>
+<p>A multa (IRA) é limitada a <strong>6 meses de juros</strong> e <strong>3 % do saldo devedor</strong> (o menor dos dois). Muitas vezes negociável a zero, e não devida em caso de venda por transferência profissional, demissão ou falecimento.</p>`},
+{id:"proprio",t:"5. Custos recorrentes do proprietário",h:`
+<ul>
+<li><strong>Taxe foncière</strong> (IPTU francês): depende do valor locativo cadastral e da alíquota municipal. Bases reajustadas em +0,8 % em 2026; muitas prefeituras também subiram as alíquotas. Costuma equivaler a 1 a 2 meses de aluguel por ano. Imóvel novo: isenção possível por 2 anos.</li>
+<li><strong>Condomínio</strong>: parte já está nas « charges » que você paga como inquilino (repassáveis); como proprietário você paga também a parte não repassável (síndico, grandes obras, fundo de obras ALUR).</li>
+<li><strong>Manutenção e obras</strong>: regra usual de 0,5 a 1,5 % do valor por ano (mais em casa antiga; atenção a DPE F/G e às obrigações de reforma energética).</li>
+<li><strong>Seguro residencial</strong> do proprietário ocupante (um pouco mais caro que o do inquilino).</li>
+</ul>`},
+{id:"revente",t:"6. Revenda",h:`
+<p>O ganho de capital na <strong>residência principal</strong> é totalmente isento de imposto e de contribuições sociais. Mas revender custa: comissão da imobiliária (≈ 4–6 %), diagnósticos, eventual IRA. Esse custo de ida e volta (≈ 12–15 % no total) explica por que comprar raramente compensa em menos de 5 a 8 anos.</p>
+<p>Preços: após −5 % em 2024 e leve recuperação em 2025, o usado volta a cair (−0,8 % em um ano no T2 2026, casas −1,3 %, Paris +0,6 %). No longo prazo, uma hipótese prudente é valorização próxima da inflação (0 a 2 %/ano), ajustada à cidade.</p>`},
+{id:"placement",t:"7. Investir em vez de comprar: qual taxa usar?",h:`
+<p>Somente aplicações <strong>com capital garantido</strong> são consideradas:</p>
+<div class="tw"><table>
+<tr><th>Aplicação</th><th>Rendimento líquido</th><th>Limites</th></tr>
+<tr><td>Livret A / LDDS</td><td class="n">1,7 %</td><td>Desde 1º de agosto de 2026. Isento de imposto. Tetos de 22 950 € e 12 000 € por pessoa. Revisado 2 vezes por ano.</td></tr>
+<tr><td>LEP</td><td class="n">2,5 %</td><td>Sujeito a teto de renda, limite 10 000 €.</td></tr>
+<tr><td>Fonds euros (assurance-vie)</td><td class="n">≈ 2,15 %</td><td>2,6 % em média em 2025 (líquido de taxas), menos 17,2 % de prélèvements sociaux (a assurance-vie não entrou na alta para 18,6 %). Imposto de renda zero após 8 anos dentro do abatimento (4 600 € / 9 200 € de ganhos por ano).</td></tr>
+<tr><td>Contas tributadas (CTO, livrets bancários)</td><td class="n">× 0,686</td><td>Flat tax de 31,4 % desde 2026: 2,5 % bruto ≈ 1,7 % líquido.</td></tr>
+</table></div>
+<div class="callout"><strong>Valor sugerido: 2,15 % líquido</strong> (fonds euros), ou 1,9 % para um mix livrets + fonds euros se a entrada ultrapassar os tetos dos livrets. Em 13 anos, os fonds euros renderam 2,1 %/ano em média. Ações (ETF, SCPI…) foram excluídas de propósito.</div>`},
+{id:"methode",t:"8. Método do simulador e limitações",h:`
+<ul>
+<li>Simulação mês a mês no horizonte escolhido. As duas famílias gastam o mesmo orçamento: quem tem o menor desembolso mensal investe a diferença à taxa escolhida. O inquilino também investe a entrada desde o início.</li>
+<li>Custo do proprietário = parcela + seguro + taxe foncière + condomínio não repassável + manutenção (% do valor atual) + seguro residencial. O aluguel sobe à taxa informada.</li>
+<li>Patrimônio do comprador = valor do imóvel − custos de revenda − saldo devedor − IRA eventual + poupança. Ganho de capital isento (residência principal).</li>
+<li>O empréstimo financia tudo o que a entrada não cobre (preço + custos), garantia incluída.</li>
+<li>Não modelados: PTZ e empréstimos subsidiados, devolução parcial da caution, renegociação, benefícios não financeiros (estabilidade, liberdade para reformar) ou flexibilidade do aluguel.</li>
+<li><strong>Inflação e valor futuro do dinheiro.</strong> Todas as taxas informadas são nominais e a simulação roda em euros correntes; os dois patrimônios são comparados na mesma data, então o vencedor e o ano de equilíbrio não dependem da unidade. O veredito mostra também a diferença em euros de hoje (dividida por (1 + inflação)<sup>anos</sup>), e a opção « euros constantes » converte todos os gráficos. A parcela de um empréstimo a taxa fixa não acompanha a inflação: inflação maior (com aluguéis, preços e investimentos acompanhando) favorece a compra. Se todas as taxas, inclusive a do crédito, sobem 1 ponto, o resultado real quase não muda (verificado: 45,7 k€ contra 46,9 k€ no exemplo).</li>
+</ul>`},
+{id:"outils",t:"9. Comparação com outras ferramentas",h:`
+<div class="tw"><table>
+<tr><th>Ferramenta</th><th>Método</th><th>O que falta / o que difere</th></tr>
+<tr><td>Meilleurtaux (estudo anual)</td><td>Tempo de equilíbrio por cidade, 70 m², entrada de 10 %, 3,22 % em 20 anos, poupança 3 → 2 %, preços 0 → +2 %/ano. Média de 12 anos e 3 meses (Paris 21 anos, Lille 10 anos e 10 meses).</td><td>Sem entrada livre de dados; custos de revenda, manutenção e taxe foncière exatos não publicados.</td></tr>
+<tr><td>SimulArgent</td><td>Patrimônio em 20 anos, sobra mensal investida, inflação das despesas; padrões: investimento 3 %, valorização 1,5 %.</td><td>Custos de compra em bloco; sem IRA nem custos de revenda; horizonte fixo.</td></tr>
+<tr><td>Sinvestir</td><td>Fluxos em 25 anos, « enriquecimento » = patrimônio − custos irrecuperáveis; investimento a 5 % (bolsa/SCPI).</td><td>Rendimento com risco; contabilidade que não é uma comparação de patrimônios líquidos.</td></tr>
+<tr><td>Avenue des Investisseurs (Excel)</td><td>Patrimônio após X anos, entrada + diferença investidas, inflação configurável, cenários de valorização.</td><td>Parecido com este simulador; frais de notaire como % fixo.</td></tr>
+<tr><td>Simupatri</td><td>Custo mensal líquido de ter o imóvel vs aluguel economizado.</td><td>Sem trajetória de patrimônio nem investimento da entrada.</td></tr>
+</table></div>
+<h4>Recálculo com as hipóteses deles</h4>
+<ul>
+<li><strong>Sinvestir, Montpellier</strong>: parcela reproduzida exatamente (1 571,80 €); capital do inquilino em 25 anos 495 k€ aqui contra 479 k€ lá (aporte mensal em vez de anual). Em patrimônio líquido, a compra passa à frente por volta de 5 anos aqui, contra 18 anos lá: a diferença vem do método de cálculo deles.</li>
+<li><strong>Meilleurtaux</strong>: com as hipóteses publicadas ao pé da letra (preços +2 %/ano), o equilíbrio chega por volta de 4–5 anos (6,5–10 anos com 5 % de custo de revenda e 0,8 % de manutenção). Os tempos deles são reproduzidos com valorização efetiva de ~0,5 %/ano, 5 a 8 % de custo de revenda e 1 % de manutenção (Paris 19,5–21 anos contra 21,1; Lille 10–11,5 anos contra 10,8). As hipóteses efetivas deles são, portanto, bem mais prudentes que as divulgadas. Valorização e custos de revenda são os parâmetros que mais pesam.</li>
+</ul>`},
+{id:"sources",t:"Fontes",h:SOURCES}
+],
+en:[
+{id:"etapes",t:"1. The steps of a purchase",h:`
+<ol>
+<li><strong>Budget and borrowing capacity.</strong> Banks follow the HCSF rule: monthly payment (insurance included) ≤ <strong>35%</strong> of net income, term ≤ <strong>25 years</strong> (27 for new builds with deferral). The down payment usually covers at least the fees (≈ 10% of the price).</li>
+<li><strong>Bank or broker simulation.</strong> A financing certificate strengthens your offer.</li>
+<li><strong>Offre d'achat</strong>: written offer to the seller (price, conditions, validity).</li>
+<li><strong>Compromis / promesse de vente</strong> at the notary or agency: 5–10% deposit, <strong>10-day cooling-off period</strong> for the buyer, mortgage contingency (often 45–60 days). Mandatory surveys (DPE energy rating, asbestos, lead, electrics…).</li>
+<li><strong>Loan application and loan offer</strong>: legal <strong>10-day</strong> reflection period before accepting. Choose the loan insurance (external insurer allowed; the Lemoine law lets you switch any time).</li>
+<li><strong>Acte authentique</strong> (deed) at the notary, about 3 months after the compromis: price and fees paid, keys handed over.</li>
+<li><strong>After the purchase</strong>: home insurance, taxe foncière every autumn, condo charges and meetings.</li>
+</ol>`},
+{id:"notaire",t:"2. Notary fees",h:`
+<p>Called “notary fees”, they are mostly <strong>taxes</strong>. For existing homes expect about <strong>7.5–8.5%</strong> of the price; for new builds <strong>2–3%</strong>.</p>
+<div class="tw"><table>
+<tr><th>Item</th><th>Amount</th><th>Comment</th></tr>
+<tr><td>Transfer taxes (DMTO)</td><td class="n">6.32%</td><td>Increased rate voted by 89 départements (Apr 2025 → Mar 2028) for non first-time buyers.</td></tr>
+<tr><td></td><td class="n">5.81%</td><td>Eligible first-time buyers, and everyone in the 11 non-increased départements.</td></tr>
+<tr><td></td><td class="n">5.09%</td><td>Indre (reduced départemental share).</td></tr>
+<tr><td></td><td class="n">≈ 0.7%</td><td>New build (VEFA): reduced land-registry tax; VAT is already in the price.</td></tr>
+<tr><td>Notary emoluments</td><td class="n">≈ 1%</td><td>Regulated sliding scale: 3.870% up to €6,500, 1.596% up to €17,000, 1.064% up to €60,000, 0.799% above, + 20% VAT.</td></tr>
+<tr><td>Property security contribution</td><td class="n">0.10%</td><td>Minimum €15.</td></tr>
+<tr><td>Formalities & disbursements</td><td class="n">≈ €800–1,500</td><td>Planning documents, land registry, mortgage status… (estimate).</td></tr>
+</table></div>
+<p>The simulator computes these automatically; you can also enter a percentage quoted by your notary. Legal tip: furniture sold with the property (fitted kitchen…) can be deducted from the taxable base, within reason.</p>`},
+{id:"agence",t:"3. Agency fees",h:`
+<p>Unregulated, usually <strong>3–8%</strong> of the price, sliding. Paid by the seller or the buyer depending on the mandate. When the buyer pays, the listing must show the price excluding fees and the percentage; notary fees are then computed on the price excluding fees. Private sale: €0.</p>`},
+{id:"credit",t:"4. The mortgage",h:`
+<h4>Rates (September 2026)</h4>
+<p>Pretto averages: <strong>3.43%</strong> over 15 years, <strong>3.54%</strong> over 20 years, <strong>3.61%</strong> over 25 years, up about 0.1 point in a month. The 10-year OAT is back above 4%, pushing rates up. A strong file (stable income, down payment, remaining savings) gets better than average.</p>
+<h4>Loan insurance</h4>
+<p>Required in practice. 2026 ballpark (non-smoker, annual % of capital): ≈ 0.10% at 25, ≈ 0.24% at 45, ≈ 0.47% at 55. External insurance is often 2–3× cheaper than the bank's group policy.</p>
+<h4>Guarantee</h4>
+<p><strong>Caution</strong> (Crédit Logement, etc.) ≈ 0.8–1.5% of the loan, partly refunded at the end; <strong>mortgage (hypothèque)</strong> up to 2%; <strong>PPD / special legal mortgage</strong> ≈ 0.8% + fixed costs.</p>
+<h4>Other fees</h4>
+<p>Bank arrangement fees (often €500–1,500, negotiable), broker fees (0 to ≈ 1% of the loan). The <strong>TAEG</strong> (APR) bundles rate, insurance, guarantee and fees: that is the figure to compare.</p>
+<h4>Schemes</h4>
+<p><strong>PTZ</strong> (zero-rate loan) extended to 31/12/2027: new builds (houses and flats) in every zone, existing homes with works ≥ 25% of total cost, means-tested; covers at most 50% of the operation. Also: Action Logement loan, PAS. Not modelled here: they lower your average rate, so you can enter a lower weighted-average rate.</p>
+<h4>Early repayment</h4>
+<p>Penalties (IRA) are capped at <strong>6 months of interest</strong> and <strong>3% of the outstanding capital</strong>, whichever is lower. Often negotiable to zero, and not due when selling because of a job relocation, redundancy or death.</p>`},
+{id:"proprio",t:"5. Recurring owner costs",h:`
+<ul>
+<li><strong>Taxe foncière</strong> (property tax): based on the cadastral rental value and the local rate. Bases up 0.8% in 2026; many towns also raised their rates. Often equal to 1–2 months of rent per year. New builds: possible 2-year exemption.</li>
+<li><strong>Condo charges</strong>: part is already in your tenant “charges” (recoverable); as an owner you also pay the non-recoverable share (managing agent, major works, ALUR works fund).</li>
+<li><strong>Maintenance and major works</strong>: rule of thumb 0.5–1.5% of value per year (more for an old house; watch for F/G energy ratings and renovation obligations).</li>
+<li><strong>Home insurance</strong> for owner-occupiers (slightly more than a tenant's).</li>
+</ul>`},
+{id:"revente",t:"6. Resale",h:`
+<p>Capital gains on your <strong>main residence</strong> are fully exempt from income tax and social charges. But selling costs money: agency fees (≈ 4–6%), surveys, possible IRA. This round-trip cost (≈ 12–15% in total) is why buying rarely pays off over less than 5–8 years.</p>
+<p>Prices: after −5% in 2024 and a slight recovery in 2025, existing homes are falling again (−0.8% year on year in Q2 2026, houses −1.3%, Paris +0.6%). Over the long run a prudent assumption is growth close to inflation (0–2%/yr), adjusted for the city.</p>`},
+{id:"placement",t:"7. Investing instead of buying: which rate?",h:`
+<p>Only <strong>capital-guaranteed</strong> products are considered:</p>
+<div class="tw"><table>
+<tr><th>Product</th><th>Net return</th><th>Limits</th></tr>
+<tr><td>Livret A / LDDS</td><td class="n">1.7%</td><td>Since 1 August 2026. Tax-free. Caps €22,950 and €12,000 per person. Reviewed twice a year.</td></tr>
+<tr><td>LEP</td><td class="n">2.5%</td><td>Means-tested, cap €10,000.</td></tr>
+<tr><td>Euro fund (assurance-vie)</td><td class="n">≈ 2.15%</td><td>2.6% average in 2025 (net of management fees), minus 17.2% social charges (life insurance was spared the rise to 18.6%). No income tax after 8 years within the allowance (€4,600 / €9,200 of gains per year).</td></tr>
+<tr><td>Taxable accounts (CTO, bank savings)</td><td class="n">× 0.686</td><td>31.4% flat tax since 2026: 2.5% gross ≈ 1.7% net.</td></tr>
+</table></div>
+<div class="callout"><strong>Suggested value: 2.15% net</strong> (euro fund), or 1.9% for a mix of savings accounts + euro fund if your down payment exceeds the livret caps. Over 13 years euro funds averaged 2.1%/yr. Equities (ETFs, SCPI…) are deliberately excluded.</div>`},
+{id:"methode",t:"8. Method and limitations",h:`
+<ul>
+<li>Month-by-month simulation over the chosen horizon. Both households spend the same budget: whoever has the lower monthly outflow invests the difference at the chosen rate. The renter also invests the down payment from day one.</li>
+<li>Owner cost = loan payment + insurance + property tax + non-recoverable condo charges + maintenance (% of current value) + home insurance. Rent rises at the rate you enter.</li>
+<li>Buyer net worth = home value − selling costs − outstanding balance − any IRA + savings. Capital gain exempt (main residence).</li>
+<li>The loan finances everything the down payment doesn't cover (price + fees), guarantee included.</li>
+<li>Not modelled: PTZ and subsidised loans, partial refund of the caution, renegotiation, non-financial benefits (stability, freedom to renovate) or the flexibility of renting.</li>
+<li><strong>Inflation and the future value of money.</strong> Every rate you enter is nominal and the simulation runs in current euros; both net worths are compared at the same date, so the winner and the break-even year don't depend on the unit. The verdict also shows the gap in today's euros (divided by (1 + inflation)<sup>years</sup>), and the “constant euros” box converts every chart. A fixed-rate loan payment does not follow inflation, so higher inflation (with rents, prices and investments following) favours buying. If every rate, the loan included, rises by one point, the real result barely moves (checked: €45.7k vs €46.9k on the example).</li>
+</ul>`},
+{id:"outils",t:"9. Comparison with other tools",h:`
+<div class="tw"><table>
+<tr><th>Tool</th><th>Method</th><th>What's missing / different</th></tr>
+<tr><td>Meilleurtaux (annual study)</td><td>Break-even time per city, 70 m², 10% down, 3.22% over 20 yrs, savings 3 → 2%, prices 0 → +2%/yr. 12 yrs 3 months on average (Paris 21 yrs, Lille 10 yrs 10 months).</td><td>No free input; exact resale, maintenance and property-tax assumptions not published.</td></tr>
+<tr><td>SimulArgent</td><td>Net worth at 20 yrs, monthly surplus invested, cost inflation; defaults: 3% investment, 1.5% appreciation.</td><td>Purchase costs as one lump; no IRA or selling costs; fixed horizon.</td></tr>
+<tr><td>Sinvestir</td><td>25-year cash flows, “enrichment” = assets − unrecoverable costs; investment at 5% (stocks/SCPI).</td><td>Risky return; accounting that isn't a net-worth comparison.</td></tr>
+<tr><td>Avenue des Investisseurs (Excel)</td><td>Net worth after X yrs, down payment + difference invested, adjustable inflation, appreciation scenarios.</td><td>Close to this simulator; notary fees as a flat %.</td></tr>
+<tr><td>Simupatri</td><td>Net monthly cost of owning vs rent saved.</td><td>No net-worth path, no investing of the down payment.</td></tr>
+</table></div>
+<h4>Recomputed with their assumptions</h4>
+<ul>
+<li><strong>Sinvestir, Montpellier</strong>: monthly payment reproduced exactly (€1,571.80); renter capital at 25 yrs €495k here vs €479k there (monthly vs annual investing). On net worth, buying pulls ahead around year 5 here vs year 18 there: the gap comes from their accounting method.</li>
+<li><strong>Meilleurtaux</strong>: taking their published assumptions literally (prices +2%/yr), break-even comes around 4–5 yrs (6.5–10 yrs with 5% selling costs and 0.8% maintenance). Their durations are reproduced with ~0.5%/yr effective appreciation, 5–8% selling costs and 1% maintenance (Paris 19.5–21 yrs vs 21.1; Lille 10–11.5 yrs vs 10.8). So their effective assumptions are much more prudent than the published ones. Appreciation and selling costs are the parameters that weigh most.</li>
+</ul>`},
+{id:"sources",t:"Sources",h:SOURCES}
+]};
+const HELP={
+fr:{
+rent:"Ce que vous payez aujourd'hui chaque mois : loyer hors charges + provisions pour charges (eau, chauffage collectif, entretien des parties communes…). C'est le montant de référence face au coût de l'achat.",
+rentG:"Hausse annuelle attendue de votre loyer. En bail d'habitation, la révision est plafonnée par l'IRL (+1,15 % sur un an au T2 2026). 1 à 2 % est une hypothèse raisonnable.",
+renterIns:"Prime annuelle de votre assurance habitation de locataire (obligatoire). Souvent 100 à 250 €/an. Elle disparaît si vous achetez, remplacée par l'assurance propriétaire.",
+price:"Prix payé au vendeur, hors honoraires d'agence et hors frais de notaire. Si l'annonce est « FAI », retirez les honoraires de l'agence et indiquez-les dans le champ « Honoraires agence ».",
+ptype:"Ancien : logement existant, frais de notaire ≈ 7,5–8,5 %. Neuf (VEFA) : logement neuf acheté au promoteur, frais ≈ 2–3 % (TVA déjà incluse dans le prix).",
+agencyPct:"Honoraires de l'agence à votre charge, en % du prix net vendeur. Souvent 3 à 6 %. Mettez 0 si le vendeur les paie ou si vous achetez entre particuliers.",
+dmto:"Taux des droits de mutation de votre département. 6,32 % dans 89 départements ; 5,81 % si vous êtes primo-accédant (pas propriétaire de votre résidence principale depuis 2 ans) ou dans un département non majoré ; 5,09 % dans l'Indre.",
+notaryMode:"« Calcul auto » estime les frais poste par poste (DMTO + émoluments + CSI + débours). Choisissez « Manuel » si votre notaire vous a donné un montant ou un pourcentage.",
+notaryPct:"Utilisé seulement en mode manuel : frais de notaire totaux en % du prix net vendeur (ex. 7,9 % dans l'ancien, 2,5 % dans le neuf).",
+apport:"Somme totale que vous pouvez mettre dans l'achat. Elle paie d'abord les frais ; le reste réduit le prêt. Dans le scénario location, cette même somme est placée au taux choisi.",
+income:"Revenus nets mensuels du foyer (avant impôt à la source). Sert uniquement à calculer le taux d'endettement : la banque exige en général une mensualité ≤ 35 % de ces revenus.",
+rate:"Taux nominal annuel du crédit, hors assurance. Moyennes sept. 2026 : 3,43 % (15 ans), 3,54 % (20 ans), 3,61 % (25 ans). Remplacez par le taux de votre offre ou simulation bancaire.",
+years:"Durée du prêt en années. Maximum 25 ans selon la règle HCSF (27 dans le neuf avec différé). Plus long = mensualité plus basse mais plus d'intérêts.",
+insRate:"Taux annuel de l'assurance emprunteur, en % du capital emprunté initial. Ordres de grandeur : ≈ 0,10 % à 25 ans, 0,25 % à 45 ans, 0,45 % à 55 ans. Pour un couple assuré à 100 % chacun, additionnez les deux taux.",
+guarPct:"Coût de la garantie du prêt en % du montant emprunté : caution (Crédit Logement…) ≈ 0,8–1,5 %, hypothèque ≈ 1,5–2 %, PPD ≈ 0,8 %. Indiqué dans l'offre de prêt.",
+dossier:"Frais de dossier facturés par la banque pour monter le prêt (souvent 500 à 1 500 €, négociables).",
+broker:"Honoraires du courtier en crédit, s'il y en a un (souvent 1 000 à 3 000 € ou ≈ 1 % du prêt). 0 si vous traitez directement avec la banque.",
+tf:"Taxe foncière annuelle estimée du bien. Demandez le dernier avis au vendeur (c'est obligatoire dans l'annonce ou le dossier). À défaut, comptez souvent 1 à 2 mois de loyer.",
+tfG:"Hausse annuelle attendue de la taxe foncière (revalorisation des bases + hausses de taux communaux). Les bases ont augmenté de 0,8 % en 2026 ; 2 à 3 % par an est prudent.",
+copro:"Charges de copropriété mensuelles que vous paierez EN PLUS de ce que vous payez déjà comme locataire : part non récupérable (syndic, gros travaux, fonds travaux). 0 pour une maison individuelle.",
+maint:"Budget annuel d'entretien et de travaux, en % de la valeur du bien. 0,5 % pour un appartement récent, 1 à 1,5 % pour une maison ancienne.",
+ownerIns:"Prime annuelle de l'assurance habitation de propriétaire occupant (multirisque habitation). Souvent 150 à 400 €/an selon la surface.",
+appMode:"« Taux constant » : même valorisation chaque année. « Par périodes de 5 ans » : un taux différent pour chaque tranche de 5 ans (ex. stagnation puis reprise).",
+app:"Hausse (ou baisse, avec un signe −) annuelle moyenne attendue du prix du bien. Historiquement proche de l'inflation sur longue période ; −0,8 % sur un an au T2 2026 selon l'INSEE.",
+blocks:"Valorisation annuelle moyenne pour chaque période de 5 ans (années 1–5, 6–10…). Valeurs négatives possibles.",
+sellPct:"Coûts supportés à la revente en % du prix de vente : honoraires d'agence (≈ 4–6 %), diagnostics. 0 si vous comptez vendre sans agence.",
+horizon:"Nombre d'années après lesquelles on compare les deux patrimoines, c'est-à-dire combien de temps vous pensez garder le logement (1 à 40 ans).",
+ira:"Si le prêt n'est pas remboursé à l'horizon, la banque peut facturer des indemnités de remboursement anticipé : min(6 mois d'intérêts ; 3 % du capital restant dû). Décochez si elles ont été négociées à zéro.",
+preset:"Placement sans risque où irait votre argent si vous restez locataire. Le rendement net correspondant est inscrit dans le champ suivant. Choisissez « Personnalisé » pour saisir votre propre taux.",
+inv:"Rendement annuel net d'impôts et de prélèvements sociaux. Livret A 1,7 %, LEP 2,5 %, fonds euros ≈ 2,15 % net. N'utilisez pas de rendement d'actions : l'outil compare à un placement sans risque.",
+infl:"Inflation annuelle moyenne attendue sur l'horizon (2,4 % sur un an en août 2026 ; cible BCE 2 %). Elle indexe charges et assurances, sert à calculer les taux réels et à convertir les résultats en euros d'aujourd'hui. Les autres taux saisis sont nominaux : ils doivent inclure cette inflation.",
+real:"Cochée : tous les montants sont exprimés en euros d'aujourd'hui (pouvoir d'achat constant). Décochée : euros courants (nominaux)."
+},
+pt:{
+rent:"O que você paga hoje por mês: aluguel + provisão de charges (água, aquecimento coletivo, limpeza das áreas comuns…). É o valor de referência contra o custo da compra.",
+rentG:"Reajuste anual esperado do aluguel. Na França o reajuste é limitado pelo IRL (+1,15 % em um ano no T2 2026). 1 a 2 % é uma hipótese razoável.",
+renterIns:"Prêmio anual do seu seguro residencial de inquilino (obrigatório). Geralmente 100 a 250 €/ano. Ao comprar, ele é substituído pelo seguro de proprietário.",
+price:"Preço pago ao vendedor, sem honorários da imobiliária e sem frais de notaire. Se o anúncio for « FAI », retire os honorários e informe-os no campo « Honorários da imobiliária ».",
+ptype:"Usado (ancien): imóvel existente, frais de notaire ≈ 7,5–8,5 %. Novo (VEFA): comprado na planta da construtora, custos ≈ 2–3 % (IVA já incluído no preço).",
+agencyPct:"Honorários da imobiliária pagos por você, em % do preço líquido. Geralmente 3 a 6 %. Coloque 0 se o vendedor paga ou se a compra for direta entre particulares.",
+dmto:"Taxa do imposto de transmissão do seu departamento. 6,32 % em 89 departamentos; 5,81 % se for seu primeiro imóvel (não ter sido dono da residência principal nos últimos 2 anos) ou em departamento sem majoração; 5,09 % no Indre.",
+notaryMode:"« Cálculo automático » estima os custos item por item (DMTO + emolumentos + CSI + despesas). Escolha « Manual » se o notário já lhe deu um valor ou percentual.",
+notaryPct:"Usado só no modo manual: frais de notaire totais em % do preço líquido (ex.: 7,9 % no usado, 2,5 % no novo).",
+apport:"Valor total que você pode colocar na compra. Ele paga primeiro os custos; o restante reduz o empréstimo. No cenário de aluguel, essa mesma quantia fica investida à taxa escolhida.",
+income:"Renda líquida mensal do domicílio. Serve só para calcular o comprometimento da renda: o banco costuma exigir parcela ≤ 35 % dessa renda.",
+rate:"Taxa nominal anual do crédito, sem seguro. Médias set. 2026: 3,43 % (15 anos), 3,54 % (20 anos), 3,61 % (25 anos). Substitua pela taxa da sua proposta ou simulação bancária.",
+years:"Prazo do empréstimo em anos. Máximo de 25 anos pela regra HCSF (27 no novo com carência). Prazo maior = parcela menor, mas mais juros.",
+insRate:"Taxa anual do seguro do empréstimo, em % do capital inicial. Ordem de grandeza: ≈ 0,10 % aos 25 anos, 0,25 % aos 45, 0,45 % aos 55. Casal segurado 100 % cada: some as duas taxas.",
+guarPct:"Custo da garantia do empréstimo em % do valor emprestado: caution (Crédit Logement…) ≈ 0,8–1,5 %, hipoteca ≈ 1,5–2 %, PPD ≈ 0,8 %. Consta na proposta de crédito.",
+dossier:"Tarifa cobrada pelo banco para montar o empréstimo (geralmente 500 a 1 500 €, negociável).",
+broker:"Honorários do corretor de crédito (courtier), se houver (geralmente 1 000 a 3 000 € ou ≈ 1 % do empréstimo). 0 se negociar direto com o banco.",
+tf:"Taxe foncière anual estimada do imóvel (equivalente ao IPTU). Peça o último aviso ao vendedor. Sem essa informação, costuma equivaler a 1 a 2 meses de aluguel.",
+tfG:"Aumento anual esperado da taxe foncière (reajuste das bases + aumento das alíquotas municipais). As bases subiram 0,8 % em 2026; 2 a 3 % ao ano é prudente.",
+copro:"Condomínio mensal que você pagará A MAIS do que já paga como inquilino: a parte não repassável (síndico, grandes obras, fundo de obras). 0 para casa.",
+maint:"Orçamento anual de manutenção e obras, em % do valor do imóvel. 0,5 % para apartamento recente, 1 a 1,5 % para casa antiga.",
+ownerIns:"Prêmio anual do seguro residencial do proprietário ocupante. Geralmente 150 a 400 €/ano, conforme a área.",
+appMode:"« Taxa constante »: mesma valorização todo ano. « Por períodos de 5 anos »: uma taxa diferente para cada bloco de 5 anos (ex.: estagnação e depois recuperação).",
+app:"Valorização (ou desvalorização, com sinal −) média anual esperada do imóvel. Historicamente próxima da inflação no longo prazo; −0,8 % em um ano no T2 2026 segundo o INSEE.",
+blocks:"Valorização média anual para cada período de 5 anos (anos 1–5, 6–10…). Valores negativos são permitidos.",
+sellPct:"Custos na revenda em % do preço de venda: comissão da imobiliária (≈ 4–6 %), diagnósticos. 0 se pretende vender sem imobiliária.",
+horizon:"Número de anos após o qual os dois patrimônios são comparados, ou seja, quanto tempo você pretende ficar no imóvel (1 a 40 anos).",
+ira:"Se o empréstimo não estiver quitado no horizonte, o banco pode cobrar multa de quitação antecipada: mín(6 meses de juros; 3 % do saldo devedor). Desmarque se ela foi negociada a zero.",
+preset:"Aplicação sem risco onde seu dinheiro ficaria se continuar alugando. O rendimento líquido correspondente aparece no campo seguinte. Escolha « Personalizado » para digitar sua própria taxa.",
+inv:"Rendimento anual líquido de impostos e contribuições sociais. Livret A 1,7 %, LEP 2,5 %, fonds euros ≈ 2,15 % líquido. Não use rendimento de ações: a ferramenta compara com investimento sem risco.",
+infl:"Inflação média anual esperada no horizonte (2,4 % em 12 meses em agosto de 2026; meta do BCE 2 %). Reajusta condomínio e seguros, calcula as taxas reais e converte os resultados em euros de hoje. As demais taxas digitadas são nominais: devem incluir essa inflação.",
+real:"Marcado: todos os valores ficam em euros de hoje (poder de compra constante). Desmarcado: euros correntes (nominais)."
+},
+en:{
+rent:"What you pay each month today: rent + service-charge provisions (water, shared heating, common-area upkeep…). This is the benchmark against the cost of buying.",
+rentG:"Expected yearly rent increase. French residential leases cap it with the IRL index (+1.15% year on year in Q2 2026). 1–2% is a reasonable assumption.",
+renterIns:"Annual premium of your tenant home insurance (mandatory). Usually €100–250/yr. If you buy, it is replaced by owner insurance.",
+price:"Price paid to the seller, excluding agency fees and notary fees. If the listing says “FAI”, strip out the agency fee and enter it in the “Agency fees” field.",
+ptype:"Existing (ancien): notary fees ≈ 7.5–8.5%. New build (VEFA, bought off-plan from a developer): fees ≈ 2–3% (VAT already in the price).",
+agencyPct:"Agency fee you pay, as % of the net seller price. Often 3–6%. Enter 0 if the seller pays it or for a private sale.",
+dmto:"Transfer-tax rate for your département. 6.32% in 89 départements; 5.81% for first-time buyers (no main-home ownership in the last 2 years) or in non-increased départements; 5.09% in Indre.",
+notaryMode:"“Auto calculation” estimates each item (DMTO + emoluments + CSI + disbursements). Choose “Manual” if your notary gave you an amount or percentage.",
+notaryPct:"Only used in manual mode: total notary fees as % of the net seller price (e.g. 7.9% for existing homes, 2.5% for new builds).",
+apport:"Total cash you can put into the purchase. It pays the fees first; the rest reduces the loan. In the renting scenario the same amount is invested at the chosen rate.",
+income:"Household net monthly income. Only used for the debt-to-income ratio: banks usually require the payment to be ≤ 35% of it.",
+rate:"Nominal annual loan rate, excluding insurance. Sept 2026 averages: 3.43% (15 yrs), 3.54% (20 yrs), 3.61% (25 yrs). Replace with your bank offer or quote.",
+years:"Loan term in years. HCSF cap is 25 years (27 for new builds with deferral). Longer = lower payment but more interest.",
+insRate:"Annual loan-insurance rate, as % of the initial loan. Ballpark: ≈ 0.10% at 25, 0.25% at 45, 0.45% at 55. For a couple each covered at 100%, add both rates.",
+guarPct:"Cost of the loan guarantee as % of the amount borrowed: caution (Crédit Logement…) ≈ 0.8–1.5%, mortgage ≈ 1.5–2%, PPD ≈ 0.8%. Shown in the loan offer.",
+dossier:"Arrangement fee charged by the bank (often €500–1,500, negotiable).",
+broker:"Mortgage broker fee, if any (often €1,000–3,000 or ≈ 1% of the loan). 0 if you deal with the bank directly.",
+tf:"Estimated annual taxe foncière (property tax). Ask the seller for the latest bill. Without it, it is often worth 1–2 months of rent.",
+tfG:"Expected yearly increase of the property tax (base revaluation + local rate rises). Bases rose 0.8% in 2026; 2–3% a year is prudent.",
+copro:"Monthly condo charges you will pay ON TOP of what you already pay as a tenant: the non-recoverable share (managing agent, major works, works fund). 0 for a detached house.",
+maint:"Annual maintenance and works budget, as % of the home's value. 0.5% for a recent flat, 1–1.5% for an old house.",
+ownerIns:"Annual premium of owner-occupier home insurance. Usually €150–400/yr depending on size.",
+appMode:"“Constant rate”: same appreciation every year. “By 5-year periods”: a different rate for each 5-year block (e.g. stagnation then recovery).",
+app:"Expected average yearly change in the home's price (use − for a decline). Historically close to inflation over the long run; −0.8% year on year in Q2 2026 per INSEE.",
+blocks:"Average yearly appreciation for each 5-year period (years 1–5, 6–10…). Negative values allowed.",
+sellPct:"Costs when selling, as % of the sale price: agency fee (≈ 4–6%), surveys. 0 if you plan to sell without an agent.",
+horizon:"Number of years after which the two net worths are compared, i.e. how long you expect to keep the home (1–40 years).",
+ira:"If the loan isn't repaid by the horizon, the bank may charge an early-repayment penalty: min(6 months of interest; 3% of the outstanding balance). Untick if it was negotiated to zero.",
+preset:"Risk-free product where your money would go if you keep renting. Its net return fills the next field. Choose “Custom” to type your own rate.",
+inv:"Annual return net of income tax and social charges. Livret A 1.7%, LEP 2.5%, euro fund ≈ 2.15% net. Don't use equity returns: the tool compares against a risk-free investment.",
+infl:"Expected average yearly inflation over the horizon (2.4% year on year in August 2026; ECB target 2%). It indexes charges and insurance, drives the real rates and converts results into today's euros. The other rates you enter are nominal: they must include this inflation.",
+real:"Ticked: every amount is shown in today's euros (constant purchasing power). Unticked: current (nominal) euros."
+}};
+(function(){
+const $=id=>document.getElementById(id);
+let LANG="fr";
+try{const s=localStorage.getItem("lva_lang"); if(s&&I18N[s]) LANG=s; else { const n=(navigator.language||"fr").slice(0,2); if(I18N[n]) LANG=n; }}catch(e){}
+const T=(k,vars)=>{let s=(I18N[LANG]&&I18N[LANG][k])||I18N.fr[k]||k; if(vars) for(const v in vars) s=s.split("{"+v+"}").join(vars[v]); return s;};
+const nf0=()=>new Intl.NumberFormat(LOCALE[LANG],{style:"currency",currency:"EUR",maximumFractionDigits:0});
+const eur=v=>nf0().format(Math.round(v));
+const pct=(v,d=2)=>new Intl.NumberFormat(LOCALE[LANG],{minimumFractionDigits:d,maximumFractionDigits:d}).format(v)+(LANG==="en"?"%":" %");
+const keur=v=>{const a=Math.abs(v); const s=v<0?"−":"+"; if(a>=1e6) return s+new Intl.NumberFormat(LOCALE[LANG],{maximumFractionDigits:1}).format(a/1e6)+" M€"; return s+new Intl.NumberFormat(LOCALE[LANG],{maximumFractionDigits:0}).format(a/1000)+" k€";};
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------- blocks (5-year appreciation) ----------
+const BLK_DEF=[0,1,1.5,1.5,1.5,1.5,1.5,1.5];
+(function buildBlocks(){const w=$("blocks"); BLK_DEF.forEach((v,i)=>{const d=document.createElement("div"); d.innerHTML=`<div class="lbl">${i*5+1}–${i*5+5}</div><div class="in"><input id="blk${i}" type="number" step="0.1" value="${v}" aria-label="${i*5+1}-${i*5+5}"></div>`; w.appendChild(d);});})();
+
+function read(){
+  const g=id=>{const v=parseFloat($(id).value); return isFinite(v)?v:0;};
+  return {rent:g("rent"),rentG:g("rentG"),renterIns:g("renterIns"),price:g("price"),ptype:$("ptype").value,agencyPct:g("agencyPct"),dmto:parseFloat($("dmto").value),
+    notaryMode:$("notaryMode").value,notaryPct:g("notaryPct"),apport:g("apport"),income:g("income"),rate:g("rate"),years:Math.max(1,Math.round(g("years"))),
+    insRate:g("insRate"),guarPct:g("guarPct"),dossier:g("dossier"),broker:g("broker"),tf:g("tf"),tfG:g("tfG"),copro:g("copro"),maint:g("maint"),ownerIns:g("ownerIns"),
+    appMode:$("appMode").value,app:g("app"),blocks:BLK_DEF.map((_,i)=>g("blk"+i)),sellPct:g("sellPct"),horizon:Math.min(40,Math.max(1,Math.round(g("horizon")))),
+    ira:$("ira").checked,inv:g("inv"),infl:g("infl"),real:$("real").checked};
+}
+
+function emoluments(p){const tiers=[[6500,.0387],[17000,.01596],[60000,.01064],[Infinity,.00799]]; let prev=0,e=0; for(const [cap,r] of tiers){ if(p>prev){e+=(Math.min(p,cap)-prev)*r;} prev=cap;} return e*1.2;}
+function notary(p){
+  if(p.notaryMode==="manual") return {manual:p.price*p.notaryPct/100,total:p.price*p.notaryPct/100};
+  const rate=p.ptype==="neuf"?0.715:p.dmto;
+  const dmto=p.price*rate/100, emol=emoluments(p.price), csi=Math.max(15,p.price*0.001), form=p.price>0?1200:0;
+  return {dmto,emol,csi,form,total:dmto+emol+csi+form};
+}
+const appRate=(p,y)=>p.appMode==="blocks"?p.blocks[Math.min(Math.floor(y/5),7)]:p.app;
+
+function simulate(p){
+  const agency=p.price*p.agencyPct/100, nt=notary(p), g=p.guarPct/100;
+  const base=p.price+agency+nt.total+p.dossier+p.broker;
+  const loan=Math.max(0,(base-p.apport)/(1-g)), guar=loan*g;
+  const excess=Math.max(0,p.apport-base), apportUsed=p.apport-excess;
+  const fees=agency+nt.total+p.dossier+p.broker+guar;
+  const n=p.years*12, i=p.rate/100/12;
+  const pay=loan>0?(i>0?loan*i/(1-Math.pow(1+i,-n)):loan/n):0, insM=loan*p.insRate/100/12;
+  const rM=Math.pow(1+p.inv/100,1/12)-1, infl=p.infl/100, H=p.horizon, sell=p.sellPct/100;
+  const ira=b=>(p.ira&&b>0.5)?Math.min(0.03*b,b*i*6):0;
+  let bal=loan, value=p.price, Pb=excess, Pr=p.apport, cumI=0, cumP=0, cumIns=0, unB=fees, unR=0;
+  const R={p,loan,guar,pay,insM,fees,agency,nt,base,apportUsed,years:[0],nwB:[p.price*(1-sell)-loan-ira(loan)+Pb],nwR:[Pr],val:[p.price],bal:[loan],cumI:[0],cumP:[0],unB:[fees],unR:[0],flows:[],outB:[],outR:[]};
+  for(let y=0;y<H;y++){
+    const vm=Math.pow(1+appRate(p,y)/100,1/12);
+    const rentM=p.rent*Math.pow(1+p.rentG/100,y)+p.renterIns/12*Math.pow(1+infl,y);
+    const tfM=p.tf*Math.pow(1+p.tfG/100,y)/12, coproM=p.copro*Math.pow(1+infl,y), oiM=p.ownerIns/12*Math.pow(1+infl,y);
+    const fl={prin:0,int:0,ins:0,tax:0,oth:0,rent:0};
+    for(let mm=0;mm<12;mm++){
+      const m=y*12+mm; let it=0,pr=0,is=0;
+      if(m<n&&bal>0.005){it=bal*i; pr=Math.min(pay-it,bal); bal-=pr; is=insM;}
+      const maintM=value*p.maint/100/12;
+      const outB=it+pr+is+tfM+coproM+oiM+maintM;
+      Pb*=1+rM; Pr*=1+rM;
+      const d=outB-rentM; if(d>0) Pr+=d; else Pb-=d;
+      value*=vm;
+      fl.prin+=pr; fl.int+=it; fl.ins+=is; fl.tax+=tfM; fl.oth+=coproM+oiM+maintM; fl.rent+=rentM;
+    }
+    cumI+=fl.int; cumP+=fl.prin; cumIns+=fl.ins;
+    unB+=fl.int+fl.ins+fl.tax+fl.oth; unR+=fl.rent;
+    const opp=apportUsed*(Math.pow(1+p.inv/100,y+1)-1);
+    R.years.push(y+1); R.flows.push(fl); R.val.push(value); R.bal.push(Math.max(0,bal)); R.cumI.push(cumI); R.cumP.push(cumP);
+    R.nwB.push(value*(1-sell)-Math.max(0,bal)-ira(bal)+Pb); R.nwR.push(Pr);
+    R.unB.push(unB+opp); R.unR.push(unR);
+    R.outB.push(fl.prin+fl.int+fl.ins+fl.tax+fl.oth); R.outR.push(fl.rent);
+  }
+  R.totInt=loan>0?(pay*n-loan):0; R.totIns=insM*n;
+  R.diff=R.nwB[H]-R.nwR[H];
+  R.be=null; for(let y=0;y<=H;y++){ if(R.nwB[y]>=R.nwR[y]){ let ok=true; R.be=y; break; } }
+  // first-year owner monthly cost
+  R.own1=R.outB[0]/12; R.rent1=R.outR[0]/12;
+  // TAEG
+  const net0=loan-guar-p.dossier-p.broker, cf=pay+insM;
+  if(loan>0&&net0>0){ let lo=0,hi=0.05; for(let k=0;k<80;k++){const mid=(lo+hi)/2; const pv=mid===0?cf*n:cf*(1-Math.pow(1+mid,-n))/mid; if(pv>net0) lo=mid; else hi=mid;} R.taeg=(Math.pow(1+lo,12)-1)*100; } else R.taeg=null;
+  return R;
+}
+function solve(p,key,lo,hi,extra){ // find value where diff=0 (diff monotonic)
+  const f=v=>{const q=Object.assign({},p,extra||{}); q[key]=v; return simulate(q).diff;};
+  let flo=f(lo), fhi=f(hi); if(Math.sign(flo)===Math.sign(fhi)) return null;
+  for(let k=0;k<50;k++){const mid=(lo+hi)/2, fm=f(mid); if(Math.sign(fm)===Math.sign(flo)){lo=mid;flo=fm;} else hi=mid;} return (lo+hi)/2;
+}
+
+// ---------- charts ----------
+let charts={};
+const defl=(p,y,v)=>p.real?v/Math.pow(1+p.infl/100,y):v;
+function baseOpts(stacked){
+  const ink2=css("--ink-2"), ink3=css("--ink-3"), line=css("--line");
+  return {responsive:true,maintainAspectRatio:false,animation:{duration:250},interaction:{mode:"index",intersect:false},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:css("--surface"),titleColor:css("--ink"),bodyColor:ink2,borderColor:line,borderWidth:1,padding:10,boxPadding:4,usePointStyle:true,
+      titleFont:{family:"IBM Plex Sans",weight:"600"},bodyFont:{family:"IBM Plex Mono"},callbacks:{label:c=>" "+c.dataset.label+": "+eur(c.parsed.y),title:it=>T("year")+" "+it[0].label}}},
+    scales:{x:{stacked:!!stacked,grid:{display:false},border:{color:line},ticks:{color:ink3,font:{family:"IBM Plex Mono",size:11},maxRotation:0,autoSkipPadding:12}},
+            y:{stacked:!!stacked,grid:{color:line,drawTicks:false},border:{display:false},ticks:{color:ink3,font:{family:"IBM Plex Mono",size:11},padding:8,callback:v=>keur(v).replace("+","")}}}};
+}
+const beLine={id:"beLine",afterDatasetsDraw(ch,a,o){const x=ch.$be; if(x==null) return; const sx=ch.scales.x.getPixelForValue(x); const {top,bottom}=ch.chartArea; const c=ch.ctx; c.save(); c.strokeStyle=css("--ink-3"); c.setLineDash([4,4]); c.lineWidth=1; c.beginPath(); c.moveTo(sx,top); c.lineTo(sx,bottom); c.stroke(); c.setLineDash([]); c.fillStyle=css("--ink-2"); c.font="500 11px 'IBM Plex Sans', sans-serif"; const lbl=T("lg_be")+" · "+T("yr")+" "+x; const w=c.measureText(lbl).width; c.fillText(lbl,Math.min(sx+6,ch.chartArea.right-w),top+12); c.restore();}};
+function legend(id,items){$(id).innerHTML=items.map(([c,l,t])=>`<span><i class="${t||""}" style="background:${c}"></i>${l}</span>`).join("");}
+function mk(id,type,data,opts,plugins){ if(charts[id]){charts[id].destroy();} charts[id]=new Chart($(id),{type,data,options:opts,plugins:plugins||[]}); return charts[id]; }
+
+function draw(R){
+  const p=R.p, H=p.horizon, buy=css("--buy"), rent=css("--rent"), sf=css("--surface");
+  const L=R.years;
+  // 1 net worth
+  const o1=baseOpts(); 
+  const c1=mk("ch1","line",{labels:L,datasets:[
+    {label:T("s_buy"),data:R.nwB.map((v,y)=>defl(p,y,v)),borderColor:buy,backgroundColor:buy,borderWidth:2,pointRadius:0,pointHoverRadius:5,pointHoverBorderColor:sf,pointHoverBorderWidth:2,tension:.2},
+    {label:T("s_rent"),data:R.nwR.map((v,y)=>defl(p,y,v)),borderColor:rent,backgroundColor:rent,borderWidth:2,pointRadius:0,pointHoverRadius:5,pointHoverBorderColor:sf,pointHoverBorderWidth:2,tension:.2}]},o1,[beLine]);
+  c1.$be=(R.be!=null&&R.be>0)?R.be:null; c1.update("none");
+  legend("lg1",[[buy,T("s_buy"),"line"],[rent,T("s_rent"),"line"]]);
+  // 2 annual outflows
+  const Y=L.slice(1), fx=(k)=>R.flows.map((f,y)=>defl(p,y+1,f[k]));
+  const cs=[["prin",css("--buy"),"lg_prin"],["int",css("--s7"),"lg_int"],["ins",css("--s3"),"lg_ins"],["tax",css("--s4"),"lg_tax"],["oth",css("--s5"),"lg_oth"]];
+  const o2=baseOpts(true);
+  const ds2=cs.map(([k,c,l])=>({type:"bar",label:T(l),data:fx(k),backgroundColor:c,borderColor:sf,borderWidth:{top:1,bottom:0,left:0,right:0},borderRadius:0,barPercentage:.82,categoryPercentage:.9,stack:"b",order:2}));
+  ds2.push({type:"line",label:T("lg_rent"),data:fx("rent"),borderColor:rent,backgroundColor:rent,borderWidth:2,pointRadius:0,pointHoverRadius:5,stack:"r",order:1});
+  mk("ch2","bar",{labels:Y,datasets:ds2},o2);
+  legend("lg2",cs.map(([k,c,l])=>[c,T(l)]).concat([[rent,T("lg_rent"),"line"]]));
+  // 3 unrecoverable (real mode: sum of each year's flows deflated, not a deflated nominal sum)
+  const cum=(f,start)=>{let s=start; return [start].concat(R.flows.map((fl,y)=>(s+=defl(p,y+1,f(fl)))));};
+  const rReal=((1+p.inv/100)/(1+(p.real?p.infl:0)/100))-1;
+  const unBd=p.real?cum(fl=>fl.int+fl.ins+fl.tax+fl.oth,R.fees).map((v,y)=>v+R.apportUsed*(Math.pow(1+rReal,y)-1)):R.unB;
+  const unRd=p.real?cum(fl=>fl.rent,0):R.unR;
+  mk("ch3","line",{labels:L,datasets:[
+    {label:T("lg_ub"),data:unBd,borderColor:buy,backgroundColor:buy,borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.15},
+    {label:T("lg_ur"),data:unRd,borderColor:rent,backgroundColor:rent,borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.15}]},baseOpts());
+  legend("lg3",[[buy,T("lg_ub"),"line"],[rent,T("lg_ur"),"line"]]);
+  // 4 amortization (over loan term, nominal)
+  const n=Math.max(p.years,1), La=[...Array(n+1).keys()];
+  const R2=R.p.horizon>=p.years?R:simulate(Object.assign({},p,{horizon:p.years}));
+  mk("ch4","line",{labels:La,datasets:[
+    {label:T("lg_bal"),data:R2.bal.slice(0,n+1).map((v,y)=>defl(p,y,v)),borderColor:buy,backgroundColor:buy+"22",fill:true,borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.1},
+    {label:T("lg_cp"),data:(p.real?(()=>{let s=0;return [0].concat(R2.flows.slice(0,n).map((f,y)=>s+=defl(p,y+1,f.prin)));})():R2.cumP.slice(0,n+1)),borderColor:css("--s3"),backgroundColor:css("--s3"),borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.1},
+    {label:T("lg_ci"),data:(p.real?(()=>{let s=0;return [0].concat(R2.flows.slice(0,n).map((f,y)=>s+=defl(p,y+1,f.int)));})():R2.cumI.slice(0,n+1)),borderColor:css("--s7"),backgroundColor:css("--s7"),borderWidth:2,pointRadius:0,pointHoverRadius:5,tension:.1}]},baseOpts());
+  legend("lg4",[[buy,T("lg_bal"),"line"],[css("--s3"),T("lg_cp"),"line"],[css("--s7"),T("lg_ci"),"line"]]);
+}
+
+// ---------- blocks: verdict, kpis, costs, heat, table ----------
+function render(){
+  const p=read(); const R=simulate(p); const H=p.horizon;
+  const beRent=solve(p,"rent",0,20000); const beApp=solve(p,"app",-15,20,{appMode:"const"});
+  const dv=v=>defl(p,H,v);
+  // verdict
+  const win=R.diff>=0;
+  const beTxt=R.be===0?T("v_always"):(R.be!=null?T("v_be",{y:R.be}):T("v_nobe"));
+  $("verdict").innerHTML=`<div class="eyebrow">${T("v_eyebrow",{h:H})}${p.real?" "+T("real_note"):""}</div>
+   <h2>${win?T("v_buy",{x:eur(Math.abs(dv(R.diff)))}):T("v_rent",{x:eur(Math.abs(dv(R.diff)))})}</h2>
+   <p><strong>${p.real?T("v_nom",{h:H,x:(R.diff<0?"−":"+")+eur(Math.abs(R.diff))}):T("v_real",{i:pct(p.infl,1),x:(R.diff<0?"−":"+")+eur(Math.abs(R.diff/Math.pow(1+p.infl/100,H)))})}</strong> ${beTxt} ${T("v_detail",{b:eur(dv(R.nwB[H])),r:eur(dv(R.nwR[H])),br:beRent!=null?eur(beRent):"—",ba:beApp!=null?pct(beApp,1):"—"})}</p>`;
+  const rr=x=>pct(((1+x/100)/(1+p.infl/100)-1)*100,2);
+  const appAvg=p.appMode==="blocks"?(Math.pow(R.val[H]/p.price,1/H)-1)*100:p.app;
+  $("realRates").textContent=T("rr",{a:rr(p.inv),b:rr(p.rate),c:rr(appAvg),d:rr(p.rentG)});
+  // kpis
+  const pm=R.pay+R.insM, debt=p.income>0?pm/p.income*100:null;
+  const debtPill=debt==null?`<span class="pill warn">${T("k_debt_na")}</span>`:(debt<=35?`<span class="pill good">✓ ${T("k_debt_ok")}</span>`:`<span class="pill bad">✕ ${T("k_debt_bad")}</span>`);
+  const k=[
+    [T("k_pay"),eur(pm),T("k_pay_s",{x:eur(R.insM)})],
+    [T("k_own"),eur(R.own1),T("k_own_s",{x:eur(R.rent1)})],
+    [T("k_loan"),eur(R.loan),R.taeg!=null?T("k_loan_s",{x:pct(R.taeg)}):"—"],
+    [T("k_debt"),debt==null?"—":pct(debt,1),debtPill+(p.years>25?`<br><span class="pill warn" style="margin-top:4px">${T("k_dur")}</span>`:"")],
+    [T("k_cost"),eur(R.totInt+R.totIns),T("k_cost_s",{i:eur(R.totInt),a:eur(R.totIns)})],
+    [T("k_cash"),eur(R.fees),T("k_cash_s",{x:pct(p.price>0?R.fees/p.price*100:0,1)})],
+    [T("k_be"),beRent!=null?eur(beRent):"—",T("k_be_s",{h:H})],
+    [T("k_bey"),R.be!=null?T("yr")+" "+R.be:"—",R.be!=null?T("k_bey_s",{h:H}):T("k_bey_no",{h:H})]
+  ];
+  $("kpis").innerHTML=k.map(([a,b,c])=>`<div class="kpi"><div class="k">${a}</div><div class="v">${b}</div><div class="s">${c}</div></div>`).join("");
+  // costs
+  const nt=R.nt; const rows=[[T("f_agency"),R.agency]];
+  if(nt.manual!=null) rows.push([T("f_manual"),nt.manual]); else rows.push([T("f_dmto"),nt.dmto],[T("f_emol"),nt.emol],[T("f_csi"),nt.csi],[T("f_form"),nt.form]);
+  rows.push([T("f_guar"),R.guar],[T("f_dossier"),p.dossier],[T("f_broker"),p.broker]);
+  const mx=Math.max(...rows.map(r=>r[1]),1);
+  $("costs").innerHTML=rows.map(([l,v])=>`<div class="costrow"><span>${l}</span><span class="bar"><b style="width:${(v/mx*100).toFixed(1)}%"></b></span><span class="amt">${eur(v)}</span></div>`).join("")+
+    `<div class="costrow total"><span>${T("f_total")}</span><span></span><span class="amt">${eur(R.fees)}</span></div>`;
+  $("c5sub").textContent=T("c5_sub",{x:eur(R.fees),p:pct(p.price>0?R.fees/p.price*100:0,1)});
+  // heatmap
+  const apps=[-2,-1,0,1,2,3,4], invs=[0.5,1,1.5,2,2.5,3,3.5,4];
+  const curApp=p.appMode==="blocks"?null:p.app;
+  const nearest=(arr,v)=>arr.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);
+  const ca=curApp==null?null:nearest(apps,curApp), ci=nearest(invs,p.inv);
+  const vals=invs.map(r=>apps.map(a=>dv(simulate(Object.assign({},p,{appMode:"const",app:a,inv:r})).diff)));
+  const mxA=Math.max(...vals.flat().map(Math.abs),1);
+  const hex=h=>{h=h.replace("#","");return [0,2,4].map(i=>parseInt(h.substr(i,2),16));};
+  const mid=hex(css("--div-mid")), pos=hex(css("--div-pos")), neg=hex(css("--div-neg"));
+  const mix=(a,b,t)=>a.map((x,i)=>Math.round(x+(b[i]-x)*t));
+  const dark=(()=>{const b=hex(css("--surface")); return (b[0]+b[1]+b[2])/3<100;})();
+  let h=`<table class="heat" aria-label="${T("c6_t")}"><thead><tr><th></th>${apps.map(a=>`<th>${a>0?"+":""}${a} %</th>`).join("")}</tr></thead><tbody>`;
+  invs.forEach((r,ri)=>{h+=`<tr><th>${pct(r,1)}</th>`; apps.forEach((a,ai)=>{const v=vals[ri][ai]; const t=Math.min(1,Math.pow(Math.abs(v)/mxA,.7)); const c=mix(mid,v>=0?pos:neg,t); const txt=(t>0.55||dark)?"#fff":css("--ink"); const cur=(a===ca&&r===ci)?" cur":"";
+    h+=`<td class="${cur.trim()}" style="background:rgb(${c.join(",")});color:${txt}" title="${a} % / ${r} % → ${eur(v)}">${keur(v)}</td>`;}); h+="</tr>";});
+  $("heat").innerHTML=h+"</tbody></table>";
+  // table
+  let tb=`<table class="data"><thead><tr><th>${T("year")}</th><th>${T("t_val")}</th><th>${T("t_bal")}</th><th>${T("t_outB")}</th><th>${T("t_outR")}</th><th>${T("t_nwB")}</th><th>${T("t_nwR")}</th><th>${T("t_diff")}</th></tr></thead><tbody>`;
+  for(let y=0;y<=H;y++){const d=defl(p,y,R.nwB[y]-R.nwR[y]); tb+=`<tr><td>${y}</td><td>${eur(defl(p,y,R.val[y]))}</td><td>${eur(defl(p,y,R.bal[y]))}</td><td>${y?eur(defl(p,y,R.outB[y-1])):"—"}</td><td>${y?eur(defl(p,y,R.outR[y-1])):"—"}</td><td>${eur(defl(p,y,R.nwB[y]))}</td><td>${eur(defl(p,y,R.nwR[y]))}</td><td class="${d>=0?"pos":"neg"}">${keur(d)}</td></tr>`;}
+  $("tbl").innerHTML=tb+"</tbody></table>";
+  if(window.Chart) draw(R);
+}
+
+// ---------- help tooltips ----------
+const tip=$("tip"); let tipBtn=null, tipPinned=false;
+function showTip(btn){
+  tipBtn=btn; tip.textContent=(HELP[LANG]||HELP.fr)[btn.dataset.help]||""; tip.hidden=false;
+  const r=btn.getBoundingClientRect(), w=Math.min(300,window.innerWidth-24);
+  tip.style.maxWidth=w+"px";
+  const tw=tip.offsetWidth, th=tip.offsetHeight;
+  let left=Math.max(12,Math.min(r.left+r.width/2-24,window.innerWidth-tw-12));
+  const below=r.bottom+10+th<window.innerHeight;
+  tip.style.left=left+"px"; tip.style.top=(below?r.bottom+10:r.top-10-th)+"px";
+  tip.classList.toggle("below",below); tip.classList.toggle("above",!below);
+  tip.style.setProperty("--ax",Math.max(8,Math.min(tw-18,r.left+r.width/2-left-5))+"px");
+  requestAnimationFrame(()=>tip.classList.add("on"));
+  document.querySelectorAll(".qh[aria-expanded=true]").forEach(b=>b.setAttribute("aria-expanded","false"));
+  btn.setAttribute("aria-expanded","true"); btn.setAttribute("aria-describedby","tip");
+}
+function hideTip(){ if(!tipBtn) return; tip.classList.remove("on"); tip.hidden=true; tipBtn.setAttribute("aria-expanded","false"); tipBtn.removeAttribute("aria-describedby"); tipBtn=null; tipPinned=false; }
+(function setupHelp(){
+  const mkBtn=key=>{const b=document.createElement("button"); b.type="button"; b.className="qh"; b.textContent="?"; b.dataset.help=key; b.setAttribute("aria-expanded","false"); return b;};
+  Object.keys(HELP.fr).forEach(key=>{
+    const el=$(key); let host=null, before=null;
+    if(key==="blocks"){ host=document.querySelector("#appBlocksBox > label"); }
+    else if(el && el.type==="checkbox"){ host=el.closest("label"); }
+    else { host=document.querySelector(`label[for="${key}"]`); if(host) before=host.querySelector(".hint"); }
+    if(!host) return; const b=mkBtn(key); host.insertBefore(b,before);
+    b.addEventListener("mouseenter",()=>{ if(!tipPinned) showTip(b); });
+    b.addEventListener("mouseleave",()=>{ if(!tipPinned) hideTip(); });
+    b.addEventListener("focus",()=>showTip(b));
+    b.addEventListener("blur",()=>hideTip());
+    b.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(tipBtn===b&&tipPinned){hideTip();} else {showTip(b); tipPinned=true;} });
+  });
+  document.addEventListener("click",e=>{ if(tipPinned&&!e.target.closest(".qh")) hideTip(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") hideTip(); });
+  document.querySelector("aside.inputs").addEventListener("scroll",hideTip,{passive:true});
+  window.addEventListener("scroll",hideTip,{passive:true}); window.addEventListener("resize",hideTip);
+})();
+const HELP_LBL={fr:"Aide",pt:"Ajuda",en:"Help"};
+
+// ---------- i18n apply ----------
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=T(el.dataset.i18n);});
+  document.querySelectorAll(".seg button[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG?"true":"false"));
+  document.querySelectorAll(".qh").forEach(b=>b.setAttribute("aria-label",HELP_LBL[LANG]+" : "+((HELP[LANG]||HELP.fr)[b.dataset.help]||"")));
+  hideTip();
+  const G=GUIDE[LANG];
+  $("guide").innerHTML=G.map(s=>`<section id="g-${s.id}"><h2>${s.t}</h2>${s.h}</section>`).join("");
+  $("guide-nav").innerHTML=G.map(s=>`<a href="#g-${s.id}">${s.t}</a>`).join("");
+  render();
+}
+document.querySelectorAll(".seg button[data-lang]").forEach(b=>b.addEventListener("click",()=>{LANG=b.dataset.lang; try{localStorage.setItem("lva_lang",LANG);}catch(e){} applyLang();}));
+// tabs
+function tab(which){const sim=which==="sim"; $("tab-sim").setAttribute("aria-selected",sim); $("tab-guide").setAttribute("aria-selected",!sim); $("view-sim").hidden=!sim; $("view-guide").hidden=sim; if(sim) render();}
+$("tab-sim").addEventListener("click",()=>tab("sim")); $("tab-guide").addEventListener("click",()=>tab("guide"));
+$("guide-nav").addEventListener("click",e=>{const a=e.target.closest("a"); if(!a) return; e.preventDefault(); const t=document.querySelector(a.getAttribute("href")); if(t) t.scrollIntoView({behavior:"smooth",block:"start"});});
+
+// input wiring
+let raf=0; const schedule=()=>{cancelAnimationFrame(raf); raf=requestAnimationFrame(render);};
+function syncUI(){
+  const manual=$("notaryMode").value==="manual"; $("notaryPct").disabled=!manual; $("notaryPct").parentElement.style.opacity=manual?1:.5;
+  const neuf=$("ptype").value==="neuf"; $("dmto").disabled=neuf||manual; $("dmto").parentElement.style.opacity=(neuf||manual)?.5:1;
+  const blocks=$("appMode").value==="blocks"; $("appConstBox").hidden=blocks; $("appBlocksBox").hidden=!blocks;
+}
+document.querySelector("aside.inputs").addEventListener("input",e=>{
+  if(e.target.id==="preset"&&e.target.value!=="custom") $("inv").value=e.target.value;
+  if(e.target.id==="inv"){const opt=[...$("preset").options].find(o=>o.value===$("inv").value); $("preset").value=opt?opt.value:"custom";}
+  if(e.target.id==="ptype"&&e.target.value==="neuf"&&$("tf")) {}
+  syncUI(); schedule();
+});
+document.querySelector("aside.inputs").addEventListener("change",()=>{syncUI(); schedule();});
+// theme changes → redraw charts
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>render());}catch(e){}
+new MutationObserver(()=>render()).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+function boot(){ syncUI(); applyLang(); }
+if(window.Chart){ boot(); }
+else { const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"; s.onload=boot; s.onerror=boot; document.head.appendChild(s); }
+})();
+</script>
